@@ -15,7 +15,7 @@ use EFive\Bale\Objects\ChatPhoto;
  * @property string|null $username (Optional). Username, for private chats and channels if available
  * @property string|null $firstName (Optional). First name of the other party in a private chat
  * @property string|null $lastName (Optional). Last name of the other party in a private chat
- * @property InputMedia|null $photo (Optional). Chat photo. Returned only in getChat.
+ * @property photo|null $photo (Optional). Chat photo. Returned only in getChat.
  */
 class Chat extends BaseObject
 {
