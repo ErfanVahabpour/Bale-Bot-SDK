@@ -21,11 +21,17 @@
     ],
     "support": {
         "email": "info@efive.net",
-        "docs": "https://efive.net"
+        "docs": "https://bale-bot-sdk.efive.net"
     },
+    "funding": [
+        {
+            "type": "aqayepardakht",
+            "url": "https://aqayepardakht.ir/efive"
+        }
+    ],
     "homepage": "https://github.com/ErfanVahabpour/Bale-Bot-SDK",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "guzzlehttp/guzzle": "^7.0",
         "illuminate/support": "9 - 11"
     },
