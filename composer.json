@@ -1,6 +1,7 @@
 {
     "name": "erfanvahabpour/bale-bot-sdk",
     "description": "The Unofficial Bale Bot API PHP SDK",
+    "license": "BSD 4-Clause License",
     "type": "library",
     "keywords": [
         "bale",
