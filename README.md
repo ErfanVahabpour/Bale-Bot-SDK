@@ -30,7 +30,7 @@ Returns basic information about the bot in form of a User object.
 ```php
 $Bale = new Api($token);
 
-$response = $Bale->getMe();
+$response = $Bale->getMe(); // return User object
 ```
 
 ### sendMessage Method
@@ -42,7 +42,7 @@ $Bale = new Api($token);
 $response = $Bale->sendMessage([
     'chat_id' => '2100855301',
     'text' => 'This is a text.'
-]);
+]); // return Message object
 ```
 
 ### sendMessage Method in Laravel
@@ -54,7 +54,7 @@ use EFive\Balle\Laravel\Facades\Telegram;
 $response = Telegram::sendMessage([
     'chat_id' => '2100855301',
     'text' => 'This is a text.'
-]);
+]); // return Message object
 ```
 
 ### Get first name of a chat
@@ -65,7 +65,7 @@ $Bale = new Api($token);
 
 $response = $Bale->getChat([
     'chat_id' => '2100855301'
-]);
+]); // return User object
 
 echo $response->getFirstName();
 ```
@@ -90,7 +90,7 @@ $config = [
 $bale = new BotsManager($config);
 
 // getMe Method
-$response = $bale->bot('firstBot')->getMe();
+$response = $bale->bot('firstBot')->getMe(); // return User object
 ```
 
 ## Disclaimer
