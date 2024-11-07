@@ -60,7 +60,7 @@ $response = Telegram::sendMessage([
 ]);
 ```
 
-### get first name of a chat
+### Get first name of a chat
 <p>Show the first name of a chat(private chats only)</p>
 
 ```php
@@ -71,4 +71,27 @@ $response = $Bale->getChat([
 ]);
 
 echo $response->getFirstName();
+```
+
+### Setting multiple bots
+<P>For setting multiple bots in a single application</P>
+
+```php
+use EFive\Bale\BotsManager;
+
+$config = [
+    'bots' => [
+        'firstBot' => [
+            'token' => $firstBotToken,
+        ],
+        'secondBot' => [
+            'token' => $secondBotToken,
+        ],
+    ]
+];
+
+$bale = new BotsManager($config);
+
+// getMe Method
+$response = $bale->bot('firstBot')->getMe();
 ```
