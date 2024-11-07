@@ -8,6 +8,6 @@ $token = file_exists(".token") ? file_get_contents(".token") : "YOUR_BALE_BOT_TO
 
 $Bale = new Api($token);
 
-$response = $Bale->getMe();
+$response = $Bale->getWebhookInfo();
 
 var_dump($response);

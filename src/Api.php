@@ -3,18 +3,22 @@
 namespace EFive\Bale;
 
 use BadMethodCallException;
+use EFive\Bale\Events\HasEventDispatcher;
 use EFive\Bale\Exceptions\BaleSDKException;
 use EFive\Bale\HttpClients\HttpClientInterface;
 use EFive\Bale\Methods\Get;
 use EFive\Bale\Methods\Chat;
 use EFive\Bale\Methods\Message;
+use EFive\Bale\Methods\Update;
 use EFive\Bale\Traits\Http;
 
 class Api
 {
+    use HasEventDispatcher;
     use Get;
     use Chat;
     use Message;
+    use Update;
     use Http;
 
     /** @var string Version number of the Bale Bot PHP SDK. */
