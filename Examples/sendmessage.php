@@ -10,7 +10,7 @@ $Bale = new Api($token);
 
 $response = $Bale->sendMessage([
     'chat_id' => '2100855301',
-    'text' => 'متن تست'
+    'text' => 'THis is a text.'
 ]);
 
 var_dump($response);
