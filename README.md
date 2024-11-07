@@ -21,3 +21,29 @@ Please see the [License](https://github.com/ErfanVahabpour/Bale-Bot-SDK/blob/mai
 ## License
 
 This project is released under the [BSD 4-Clause](https://github.com/ErfanVahabpour/Bale-Bot-SDK/blob/main/LICENSE.md) License.
+
+## Examples
+
+### getMe Method
+<p>A simple method for testing your bot's auth token.
+<br>
+Returns basic information about the bot in form of a User object.
+</p>
+
+```php
+$Bale = new Api($token);
+
+$response = $Bale->getMe();
+```
+
+### sendMessage Method
+<p>Send text messages.</p>
+
+```php
+$Bale = new Api($token);
+
+$response = $Bale->sendMessage([
+    'chat_id' => '2100855301',
+    'text' => 'This is a text.'
+]);
+```
