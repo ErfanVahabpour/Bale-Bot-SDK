@@ -90,20 +90,20 @@ class Message extends BaseObject
             'forward_from' => User::class,
             'forward_from_chat' => Chat::class,
             'reply_to_message' => self::class,
-            'audio' => Audio::class,
-            'animation' => Animation::class,
-            'document' => Document::class,
-            'photo' => [PhotoSize::class],
-            'sticker' => Sticker::class,
-            'video' => Video::class,
-            'voice' => Voice::class,
-            'contact' => Contact::class,
-            'location' => Location::class,
-            'new_chat_member' => ChatMember::class,
+            // 'audio' => Audio::class,
+            // 'animation' => Animation::class,
+            // 'document' => Document::class,
+            // 'photo' => [PhotoSize::class],
+            // 'sticker' => Sticker::class,
+            // 'video' => Video::class,
+            // 'voice' => Voice::class,
+            // 'contact' => Contact::class,
+            // 'location' => Location::class,
+            // 'new_chat_member' => ChatMember::class,
             'new_chat_members' => [User::class],
             'left_chat_member' => User::class,
-            'invoice' => Invoice::class,
-            'successful_payment' => SuccessfulPayment::class
+            // 'invoice' => Invoice::class,
+            // 'successful_payment' => SuccessfulPayment::class
         ];
     }
 
