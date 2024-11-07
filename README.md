@@ -13,14 +13,11 @@ Bale Bot API - PHP SDK (🚧under development🚧)
 
 Documentation for the SDK can be found on the [website](https://bale-bot-sdk.efive.net/).
 
-## Disclaimer
+## Installation
 
-This project and its author are neither associated nor affiliated with [Bale](https://bale.ai/) in any way. 
-Please see the [License](https://github.com/ErfanVahabpour/Bale-Bot-SDK/blob/main/LICENSE.md) for more details.
-
-## License
-
-This project is released under the [BSD 4-Clause](https://github.com/ErfanVahabpour/Bale-Bot-SDK/blob/main/LICENSE.md) License.
+```shell
+composer require erfanvahabpour/bale-bot-sdk
+```
 
 ## Examples
 
@@ -95,3 +92,12 @@ $bale = new BotsManager($config);
 // getMe Method
 $response = $bale->bot('firstBot')->getMe();
 ```
+
+## Disclaimer
+
+This project and its author are neither associated nor affiliated with [Bale](https://bale.ai/) in any way. 
+Please see the [License](https://github.com/ErfanVahabpour/Bale-Bot-SDK/blob/main/LICENSE.md) for more details.
+
+## License
+
+This project is released under the [BSD 4-Clause](https://github.com/ErfanVahabpour/Bale-Bot-SDK/blob/main/LICENSE.md) License.
