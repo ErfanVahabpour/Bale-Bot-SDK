@@ -47,3 +47,28 @@ $response = $Bale->sendMessage([
     'text' => 'This is a text.'
 ]);
 ```
+
+### sendMessage Method in Laravel
+<p>Send text messages.</p>
+
+```php
+use EFive\Balle\Laravel\Facades\Telegram;
+
+$response = Telegram::sendMessage([
+    'chat_id' => '2100855301',
+    'text' => 'This is a text.'
+]);
+```
+
+### get first name of a chat
+<p>Show the first name of a chat(private chats only)</p>
+
+```php
+$Bale = new Api($token);
+
+$response = $Bale->getChat([
+    'chat_id' => '2100855301'
+]);
+
+echo $response->getFirstName();
+```
