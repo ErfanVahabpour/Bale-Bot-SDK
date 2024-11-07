@@ -7,10 +7,10 @@ namespace EFive\Bale\Objects;
  *
  * @link https://docs.bale.ai/#chatphoto
  *
- * @property string $small_file_id Identifier for small sized photo (160×160). This identifier is only available until the photo have not been changed.
- * @property string $small_file_unique_id Unique identifier for small sized photo (160×160). This identifier is only available until the photo have not been changed.
- * @property string $big_file_id Identifier for big sized photo (640×640). This identifier is only available until the photo have not been changed.
- * @property string $big_file_unique_id Unique identifier for big sized photo (640×640). This identifier is only available until the photo have not been changed.
+ * @property string $small_file_id Unique file identifier of small (160x160) chat photo. This file_id can be used only for photo download. This file_id can be used only for photo download and only for as long as the photo is not changed.
+ * @property string $small_file_unique_id Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+ * @property string $big_file_id Unique file identifier of big (640x640) chat photo. This file_id can be used only for photo download. This file_id can be used only for photo download and only for as long as the photo is not changed.
+ * @property string $big_file_unique_id Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
  */
 class ChatPhoto extends BaseObject
 {
