@@ -49,9 +49,9 @@ $response = $Bale->sendMessage([
 <p>Send text messages.</p>
 
 ```php
-use EFive\Balle\Laravel\Facades\Telegram;
+use EFive\Balle\Laravel\Facades\Bale;
 
-$response = Telegram::sendMessage([
+$response = Bale::sendMessage([
     'chat_id' => '2100855301',
     'text' => 'This is a text.'
 ]); // return Message object
