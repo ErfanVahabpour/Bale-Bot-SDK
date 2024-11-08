@@ -126,7 +126,7 @@ use EFive\Bale\BotsManager;
  * @method static \EFive\Bale\Objects\Update getWebhookUpdate(bool $shouldDispatchEvents = true, ?\Psr\Http\Message\RequestInterface $request = null)
  * @method static bool removeWebhook()
  */
-final class Telegram extends Facade
+final class Bale extends Facade
 {
     /**
      * Get the registered name of the component.
