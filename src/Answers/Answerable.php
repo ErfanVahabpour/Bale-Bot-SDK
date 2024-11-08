@@ -42,7 +42,7 @@ trait Answerable
         $replyName = Str::studly(substr($method, 9));
         $methodName = 'send'.$replyName;
 
-        if (! method_exists($this->Bale, $methodName)) {
+        if (! method_exists($this->bale, $methodName)) {
             throw new BadMethodCallException(sprintf('Method [%s] does not exist.', $method));
         }
 
@@ -53,7 +53,7 @@ trait Answerable
 
         $params = array_merge(['chat_id' => $chatId], $parameters[0]);
 
-        return $this->Bale->{$methodName}($params);
+        return $this->bale->{$methodName}($params);
     }
 
     /**
