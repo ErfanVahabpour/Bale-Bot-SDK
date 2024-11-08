@@ -124,6 +124,13 @@ trait Update
         return $update;
     }
 
+    private function getRequestBody(?RequestInterface $request): mixed
+    {
+        $rawBody = $request instanceof RequestInterface ? (string) $request->getBody() : file_get_contents('php://input');
+
+        return json_decode($rawBody, true);
+    }
+
     /** Dispatch Update Event. */
     protected function dispatchUpdateEvent(UpdateObject $update): void
     {
