@@ -4,6 +4,7 @@ namespace EFive\Bale;
 
 use Illuminate\Support\Arr;
 use Psr\Container\ContainerInterface;
+use EFive\Bale\Commands\CommandInterface;
 use EFive\Bale\Exceptions\BaleBotNotFoundException;
 use EFive\Bale\Exceptions\BaleSDKException;
 
@@ -165,6 +166,58 @@ final class BotsManager
         );
 
         return $bale;
+    }
+
+    /**
+     * @param  list<(string | class-string<CommandInterface>)>  $commands  A list of command names or FQCNs of CommandInterface instances.
+     * @return array An array of commands which includes global and bot specific commands.
+     *
+     * @deprecated Will be removed in SDK v4
+     *
+     * @internal
+     * Builds the list of commands for the given commands array.
+     */
+    public function parseBotCommands(array $commands): array
+    {
+        $globalCommands = $this->getConfig('commands', []);
+        $parsedCommands = $this->parseCommands($commands);
+
+        return collect($globalCommands)
+            ->merge($parsedCommands)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Parse an array of commands and build a list.
+     *
+     * @param  list<(string | class-string<CommandInterface>)>  $commands
+     */
+    private function parseCommands(array $commands): array
+    {
+        $commandGroups = collect($this->getConfig('command_groups'));
+        $sharedCommands = collect($this->getConfig('shared_commands'));
+
+        return collect($commands)->map(function ($command) use ($commandGroups, $sharedCommands): mixed {
+            // If the command is a group, we'll parse through the group of commands
+            // and resolve the full class name.
+            if ($commandGroups->has($command)) {
+                return $this->parseCommands($commandGroups->get($command));
+            }
+
+            // If this command is actually a shared command, we'll extract the full
+            // class name out of the command list now.
+            if ($sharedCommands->has($command)) {
+                return $sharedCommands->get($command);
+            }
+
+            return $command;
+        })
+            ->flatten()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**
