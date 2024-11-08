@@ -131,6 +131,20 @@ trait Update
         return json_decode($rawBody, true);
     }
 
+    /**
+     * @throws BaleSDKException
+     */
+    private function validateHookUrl(string $url): void
+    {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            throw new BaleSDKException('Invalid URL Provided');
+        }
+
+        if (parse_url($url, PHP_URL_SCHEME) !== 'https') {
+            throw new BaleSDKException('Invalid URL, should be a HTTPS url.');
+        }
+    }
+
     /** Dispatch Update Event. */
     protected function dispatchUpdateEvent(UpdateObject $update): void
     {
