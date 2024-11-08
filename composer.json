@@ -45,5 +45,15 @@
         "psr-4": {
             "EFive\\Bale\\": "src/"
         }
-    }
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Bale": "EFive\\Bale\\Laravel\\Facades\\Telegram"
+            },
+            "providers": [
+                "EFive\\Bale\\Laravel\\TelegramServiceProvider"
+            ]
+        }
+    },
 }
