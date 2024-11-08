@@ -55,5 +55,5 @@
                 "EFive\\Bale\\Laravel\\TelegramServiceProvider"
             ]
         }
-    },
+    }
 }
