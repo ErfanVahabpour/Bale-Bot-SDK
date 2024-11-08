@@ -3,10 +3,12 @@
 namespace EFive\Bale;
 
 use BadMethodCallException;
+use EFive\Bale\Commands\CommandBus;
 use EFive\Bale\Events\HasEventDispatcher;
 use EFive\Bale\Exceptions\BaleSDKException;
 use EFive\Bale\HttpClients\HttpClientInterface;
 use EFive\Bale\Methods\Chat;
+use EFive\Bale\Methods\Commands;
 use EFive\Bale\Methods\EditMessage;
 use EFive\Bale\Methods\Get;
 use EFive\Bale\Methods\Location;
@@ -14,10 +16,13 @@ use EFive\Bale\Methods\Message;
 use EFive\Bale\Methods\Payments;
 use EFive\Bale\Methods\Stickers;
 use EFive\Bale\Methods\Update;
+use EFive\Bale\Traits\CommandsHandler;
 use EFive\Bale\Traits\Http;
 
 class Api
 {
+    use Commands;
+    use CommandsHandler;
     use HasEventDispatcher;
     use Chat;
     use EditMessage;
@@ -34,6 +39,8 @@ class Api
 
     /** @var string The name of the environment variable that contains the Bale Bot API Access Token. */
     public const BOT_TOKEN_ENV_NAME = 'BALE_BOT_TOKEN';
+
+    private CommandBus $commandBus;
 
     /**
      * Instantiates a new Bale super-class object.
@@ -58,6 +65,7 @@ class Api
         $this->httpClientHandler = $httpClientHandler;
 
         $this->baseBotUrl = $baseBotUrl;
+        $this->commandBus = new CommandBus($this);
     }
 
     /**

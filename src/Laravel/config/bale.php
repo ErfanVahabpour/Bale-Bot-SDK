@@ -1,5 +1,7 @@
 <?php
 
+use EFive\Bale\Commands\HelpCommand;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -110,6 +112,26 @@ return [
     |
     */
     'resolve_command_dependencies' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Register Bale Global Commands [Optional]
+    |--------------------------------------------------------------------------
+    |
+    | If you'd like to use the SDK's built in command handler system,
+    | You can register all the global commands here.
+    |
+    | Global commands will apply to all the bots in system and are always active.
+    |
+    | The command class should extend the \EFive\Bale\Commands\Command class.
+    |
+    | Default: The SDK registers, a help command which when a user sends /help
+    | will respond with a list of available commands and description.
+    |
+    */
+    'commands' => [
+        HelpCommand::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
