@@ -165,6 +165,17 @@ final class BotsManager
             $this->getConfig('base_bot_url', null)
         );
 
+        // Check if DI needs to be enabled for Commands
+        if ($this->container instanceof ContainerInterface && $this->getConfig('resolve_command_dependencies', false)) {
+            $bale::setContainer($this->container);
+        }
+
+        $commands = data_get($config, 'commands', []);
+        $commands = $this->parseBotCommands($commands);
+
+        // Register Commands
+        $bale->addCommands($commands);
+
         return $bale;
     }
 

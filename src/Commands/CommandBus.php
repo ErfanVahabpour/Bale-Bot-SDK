@@ -143,15 +143,29 @@ class CommandBus extends AnswerBus
     protected function handler(Update $update): Update
     {
         $message = $update->getMessage();
+        $text = $message->get('text');
 
-        if ($message->has('entities')) {
-            $this->parseCommandsIn($message)->each(fn ($entity) => $this->process(
-                $entity instanceof MessageEntity ? $entity->all() : $entity,
-                $update
-            ));
+        // Check if the message starts with a '/' to identify a bot command
+        if ($text && strpos($text, '/') === 0) {
+            // Process the command
+            $this->processCommand($text, $update);
         }
 
         return $update;
+    }
+
+    /**
+     * Execute the bot command from the message text.
+     */
+    private function processCommand(string $text, Update $update): void
+    {
+        // Split the text into command and arguments
+        $parts = explode(' ', trim($text));  // Split by spaces
+        $command = substr(array_shift($parts), 1); // Remove the '/' from the command
+        $arguments = $parts; // Remaining parts are arguments
+
+        // Execute the command with arguments
+        $this->execute($command, $update, $arguments);
     }
 
     /**
