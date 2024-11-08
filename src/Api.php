@@ -6,18 +6,26 @@ use BadMethodCallException;
 use EFive\Bale\Events\HasEventDispatcher;
 use EFive\Bale\Exceptions\BaleSDKException;
 use EFive\Bale\HttpClients\HttpClientInterface;
-use EFive\Bale\Methods\Get;
 use EFive\Bale\Methods\Chat;
+use EFive\Bale\Methods\EditMessage;
+use EFive\Bale\Methods\Get;
+use EFive\Bale\Methods\Location;
 use EFive\Bale\Methods\Message;
+use EFive\Bale\Methods\Payments;
+use EFive\Bale\Methods\Stickers;
 use EFive\Bale\Methods\Update;
 use EFive\Bale\Traits\Http;
 
 class Api
 {
     use HasEventDispatcher;
-    use Get;
     use Chat;
+    use EditMessage;
+    use Get;
+    use Location;
     use Message;
+    use Payments;
+    use Stickers;
     use Update;
     use Http;
 
