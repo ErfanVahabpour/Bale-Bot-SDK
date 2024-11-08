@@ -49,10 +49,10 @@
     "extra": {
         "laravel": {
             "aliases": {
-                "Bale": "EFive\\Bale\\Laravel\\Facades\\Telegram"
+                "Bale": "EFive\\Bale\\Laravel\\Facades\\Bale"
             },
             "providers": [
-                "EFive\\Bale\\Laravel\\TelegramServiceProvider"
+                "EFive\\Bale\\Laravel\\BaleServiceProvider"
             ]
         }
     }
