@@ -17,6 +17,7 @@ use EFive\Bale\Methods\Payments;
 use EFive\Bale\Methods\Stickers;
 use EFive\Bale\Methods\Update;
 use EFive\Bale\Traits\CommandsHandler;
+use EFive\Bale\Traits\HasContainer;
 use EFive\Bale\Traits\Http;
 
 class Api
@@ -32,6 +33,7 @@ class Api
     use Payments;
     use Stickers;
     use Update;
+    use HasContainer;
     use Http;
 
     /** @var string Version number of the Bale Bot PHP SDK. */
