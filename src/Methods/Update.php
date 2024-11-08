@@ -2,6 +2,7 @@
 
 namespace EFive\Bale\Methods;
 
+use Psr\Http\Message\RequestInterface;
 use EFive\Bale\Events\UpdateEvent;
 use EFive\Bale\Events\UpdateWasReceived;
 use EFive\Bale\Exceptions\BaleSDKException;
@@ -94,6 +95,33 @@ trait Update
         $response = $this->get('getWebhookInfo');
 
         return new WebhookInfo($response->getDecodedBody());
+    }
+
+    /**
+     * Alias for getWebhookUpdate.
+     */
+    public function getWebhookUpdates(bool $shouldDispatchEvents = true): UpdateObject
+    {
+        return $this->getWebhookUpdate($shouldDispatchEvents);
+    }
+
+    /**
+     * Returns a webhook update sent by Bale.
+     * Works only if you set a webhook.
+     *
+     * @see setWebhook
+     */
+    public function getWebhookUpdate(bool $shouldDispatchEvents = true, ?RequestInterface $request = null): UpdateObject
+    {
+        $body = $this->getRequestBody($request);
+
+        $update = new UpdateObject($body);
+
+        if ($shouldDispatchEvents) {
+            $this->dispatchUpdateEvent($update);
+        }
+
+        return $update;
     }
 
     /** Dispatch Update Event. */
