@@ -2,8 +2,13 @@
 
 namespace EFive\Bale\Traits;
 
+use InvalidArgumentException;
+use EFive\Bale\Exceptions\CouldNotUploadInputFile;
 use EFive\Bale\Exceptions\BaleSDKException;
+use EFive\Bale\FileUpload\InputFile;
 use EFive\Bale\HttpClients\HttpClientInterface;
+use EFive\Bale\Objects\BaseObject;
+use EFive\Bale\Objects\File;
 use EFive\Bale\BaleClient;
 use EFive\Bale\BaleRequest;
 use EFive\Bale\BaleResponse;
@@ -36,6 +41,23 @@ trait Http
 
     /** @var BaleResponse|null Stores the last request made to Bale Bot API. */
     protected ?BaleResponse $lastResponse = null;
+
+    /**
+     * Make this request asynchronous (non-blocking).
+     */
+    public function setAsyncRequest(bool $isAsyncRequest): self
+    {
+        $this->isAsyncRequest = $isAsyncRequest;
+
+        return $this;
+    }
+
+    public function setHttpClientHandler(HttpClientInterface $httpClientHandler): self
+    {
+        $this->httpClientHandler = $httpClientHandler;
+
+        return $this;
+    }
 
     /**
      * Sends a GET request to Bale Bot API and returns the result.
@@ -120,6 +142,53 @@ trait Http
     }
 
     /**
+     * Returns the last response returned from API request.
+     */
+    public function getLastResponse(): ?BaleResponse
+    {
+        return $this->lastResponse;
+    }
+
+    /**
+     * Download a file from Bale server by file ID.
+     *
+     * @param  File|BaseObject|string  $file  Bale File Instance / File Response Object or File ID.
+     * @param  string  $filename  Absolute path to dir or filename to save as.
+     *
+     * @throws BaleSDKException
+     */
+    public function downloadFile(File|BaseObject|string $file, string $filename): string
+    {
+        $originalFilename = null;
+        if (! $file instanceof File) {
+            if ($file instanceof BaseObject) {
+                $originalFilename = $file->get('file_name');
+
+                // Try to get file_id from the object or default to the original param.
+                $file = $file->get('file_id', $file);
+            }
+
+            if (! is_string($file)) {
+                throw new InvalidArgumentException(
+                    'Invalid $file param provided. Please provide one of file_id, File or Response object containing file_id'
+                );
+            }
+
+            $file = $this->getFile(['file_id' => $file]);
+        }
+
+        // No filename provided.
+        if (pathinfo($filename, PATHINFO_EXTENSION) === '') {
+            // Attempt to use the original file name if there is one or fallback to the file_path filename.
+            $filename .= DIRECTORY_SEPARATOR.($originalFilename ?: basename($file->file_path));
+        }
+
+        $baleRequest = $this->resolveBaleRequest('GET', '');
+
+        return $this->getClient()->download($file->file_path, $filename, $baleRequest);
+    }
+
+    /**
      * Returns Bale Bot API Access Token.
      */
     public function getAccessToken(): string
@@ -181,5 +250,82 @@ trait Http
         }
 
         return $this->client;
+    }
+
+    /**
+     * Sends a multipart/form-data request to Bale Bot API and returns the result.
+     * Used primarily for file uploads.
+     *
+     *
+     * @throws CouldNotUploadInputFile
+     * @throws BaleSDKException
+     */
+    protected function uploadFile(string $endpoint, array $params, string $inputFileField): BaleResponse
+    {
+        //Check if the field in the $params array (that is being used to send the relative file), is a file id.
+        if (! isset($params[$inputFileField])) {
+            throw CouldNotUploadInputFile::missingParam($inputFileField);
+        }
+
+        if ($this->hasFileId($inputFileField, $params)) {
+            return $this->post($endpoint, $params);
+        }
+
+        //Sending an actual file requires it to be sent using multipart/form-data
+        return $this->post($endpoint, $this->prepareMultipartParams($params, $inputFileField), true);
+    }
+
+    /**
+     * Prepare Multipart Params for File Upload.
+     *
+     *
+     * @throws CouldNotUploadInputFile
+     */
+    protected function prepareMultipartParams(array $params, string $inputFileField): array
+    {
+        $this->validateInputFileField($params, $inputFileField);
+
+        //Iterate through all param options and convert to multipart/form-data.
+        return collect($params)
+            ->reject(static fn ($value): bool => $value === null)
+            ->map(fn ($contents, $name) => $this->generateMultipartData($contents, $name))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @throws CouldNotUploadInputFile
+     */
+    protected function validateInputFileField(array $params, $inputFileField): void
+    {
+        if (! isset($params[$inputFileField])) {
+            throw CouldNotUploadInputFile::missingParam($inputFileField);
+        }
+
+        // All file-paths, urls, or file resources should be provided by using the InputFile object
+        if ($params[$inputFileField] instanceof InputFile) {
+            return;
+        }
+
+        if (! (is_string($params[$inputFileField]) && ! $this->is_json($params[$inputFileField]))) {
+            return;
+        }
+
+        throw CouldNotUploadInputFile::inputFileParameterShouldBeInputFileEntity($inputFileField);
+    }
+
+    /**
+     * Generates the multipart data required when sending files to bale.
+     */
+    protected function generateMultipartData(mixed $contents, string $name): array
+    {
+        if (! $this->isInputFile($contents)) {
+            return ['name' => $name, 'contents' => $contents];
+        }
+
+        $filename = $contents->getFilename();
+        $contents = $contents->getContents();
+
+        return ['name' => $name, 'contents' => $contents, 'filename' => $filename];
     }
 }
