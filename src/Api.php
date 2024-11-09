@@ -37,7 +37,7 @@ class Api
     use Http;
 
     /** @var string Version number of the Bale Bot PHP SDK. */
-    public const VERSION = '1.0.0';
+    public const VERSION = '1.0.1';
 
     /** @var string The name of the environment variable that contains the Bale Bot API Access Token. */
     public const BOT_TOKEN_ENV_NAME = 'BALE_BOT_TOKEN';
