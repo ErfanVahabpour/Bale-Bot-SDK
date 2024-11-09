@@ -10,7 +10,17 @@ $Bale = new Api($token);
 
 $response = $Bale->sendMessage([
     'chat_id' => '2100855301',
-    'text' => 'THis is a text.'
+    'text' => 'This is a text.',
+    'reply_markup' => [
+        'inline_keyboard' => [ 
+            [
+                [
+                    'text' => 'Button',
+                    'url' => 'https://bale-bot-sdk.efive.net/'
+                ]
+            ]
+        ]
+    ]
 ]);
 
 var_dump($response);

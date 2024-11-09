@@ -77,8 +77,8 @@ trait Http
      */
     protected function replyMarkupToString(array $params): array
     {
-        if (isset($params['reply_markup'])) {
-            $params['reply_markup'] = (string) $params['reply_markup'];
+        if (isset($params['reply_markup']) && is_array($params['reply_markup'])) {
+            $params['reply_markup'] = (string) json_encode($params['reply_markup']);
         }
 
         return $params;

@@ -21,7 +21,7 @@ trait Message
      *       'chat_id'                     => '',  // int|string - Required. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
      *       'text'                        => '',  // string     - Required. Text of the message to be sent
      *       'reply_to_message_id'         => '',  // int        - (Optional). If the message is a reply, ID of the original message
-     *       'reply_markup'                => '',  // object     - (Optional). One of either InlineKeyboardMarkup|ReplyKeyboardMarkup|ReplyKeyboardRemove|ForceReply for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
+     *       'reply_markup'                => '',  // object     - (Optional). One of either InlineKeyboardMarkup|ReplyKeyboardMarkup|ReplyKeyboardRemove for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
      * ]
      * </code>
      *
