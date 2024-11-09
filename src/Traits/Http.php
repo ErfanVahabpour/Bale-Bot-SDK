@@ -18,6 +18,8 @@ use EFive\Bale\BaleResponse;
  */
 trait Http
 {
+    use Validator;
+
     /** @var string Bale Bot API Access Token. */
     protected string $accessToken;
 
