@@ -1,4 +1,4 @@
-Bale Bot API - PHP SDK (🚧under development🚧)
+Bale Bot API - PHP SDK
 ==========================
 
 > Bale Bot PHP SDK lets you develop Bale Bots in PHP easily! Supports Laravel out of the box.
