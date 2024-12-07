@@ -271,7 +271,7 @@ trait Http
 
         $params = $this->replyMarkupToString($params);
 
-        if ($this->hasFileId($inputFileField, $params)) {
+        if ($this->hasFileId($inputFileField, $params) || (is_string($params[$inputFileField]) && preg_match('#^(?:https?|ftps?|sftp|ssh2)://#', $params[$inputFileField]) === 1)) {
             return $this->post($endpoint, $params);
         }
 
