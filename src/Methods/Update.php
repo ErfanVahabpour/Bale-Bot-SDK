@@ -84,6 +84,20 @@ trait Update
     }
 
     /**
+     * remove webhook.
+     *
+     *
+     * @link https://docs.bale.ai/#removeWebhook
+     *
+     *
+     * @throws BaleSDKException
+     */
+    public function removeWebhook(): bool
+    {
+        return $this->post('setWebhook', ['url' => ""])->getResult();
+    }
+
+    /**
      * Get current webhook status.
      *
      * @link https://docs.bale.ai/#getwebhookinfo
