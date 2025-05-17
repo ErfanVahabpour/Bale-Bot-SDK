@@ -202,6 +202,8 @@ abstract class Command implements CommandInterface
 
     private function relevantMessageSubString(): string
     {
+        return $this->getUpdate()->getMessage()->text ?? '';
+        // Skip these for now so later I fix
         //Get all the bot_command offsets in the Update object
         $commandOffsets = $this->allCommandOffsets();
 
@@ -221,6 +223,7 @@ abstract class Command implements CommandInterface
     private function allCommandOffsets(): Collection
     {
         return $this->getUpdate()->getMessage()->get('entities', collect())
+            ->map(fn ($entity) => new MessageEntity($entity))
             ->filter(static fn (MessageEntity $entity): bool => $entity->type === 'bot_command')
             ->pluck('offset') ?? collect();
     }
