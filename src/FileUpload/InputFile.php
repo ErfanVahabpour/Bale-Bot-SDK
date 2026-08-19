@@ -26,6 +26,16 @@ final class InputFile
     }
 
     /**
+     * Alias for create.
+     *
+     * @param  string|resource|StreamInterface|null  $file
+     */
+    public static function file(mixed $file = null, ?string $filename = null): self
+    {
+        return self::create($file, $filename);
+    }
+
+    /**
      * Create a file on-the-fly using the provided contents and filename.
      */
     public static function createFromContents(string $contents, string $filename): InputFile
@@ -67,7 +77,6 @@ final class InputFile
     /**
      * Return the name of the file.
      *
-     *
      * @throws CouldNotUploadInputFile
      */
     public function getFilename(): string
@@ -76,13 +85,12 @@ final class InputFile
             return $this->filename = $this->attemptFileNameDetection();
         }
 
-        return $this->filename ?? basename($this->file);
+        return $this->filename ?? basename((string) $this->file);
     }
 
     /**
      * Attempts to access the metadata in the stream or resource to determine what
      * the filename should be if the user did not supply one.
-     *
      *
      * @throws CouldNotUploadInputFile
      */
@@ -110,7 +118,6 @@ final class InputFile
 
     /**
      * Set a filename.
-     *
      *
      * @throws InvalidArgumentException
      */

@@ -3,7 +3,9 @@
 namespace EFive\Bale\Methods;
 
 use EFive\Bale\Exceptions\BaleSDKException;
+use EFive\Bale\FileUpload\InputFile;
 use EFive\Bale\Objects\Message as MessageObject;
+use EFive\Bale\Objects\MessageId;
 use EFive\Bale\Traits\Http;
 
 /**
@@ -61,13 +63,16 @@ trait Message
     /**
      * Copy messages of any kind.
      *
-     * The method is analogous to the method forwardMessages, but the copied message doesn't have a link to the original message.
+     * The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message.
      *
      * <code>
      * $params = [
      *       'chat_id'                       => '',  // int|string - Required. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
      *       'from_chat_id'                  => '',  // int        - Required. Unique identifier for the chat where the original message was sent (or channel username in the format "@channelusername")
      *       'message_id'                    => '',  // int        - Required. Message identifier in the chat specified in from_chat_id
+     *       'caption'                       => '',  // string     - (Optional). New caption for media, 0-1024 characters.
+     *       'reply_to_message_id'           => '',  // int        - (Optional). If the message is a reply, ID of the original message
+     *       'reply_markup'                  => '',  // string     - (Optional). Additional interface options.
      * ]
      * </code>
      *
@@ -75,11 +80,11 @@ trait Message
      *
      * @throws BaleSDKException
      */
-    public function copyMessage(array $params): MessageObject
+    public function copyMessage(array $params): MessageId
     {
         $response = $this->post('copyMessage', $params);
 
-        return new MessageObject($response->getDecodedBody());
+        return new MessageId($response->getDecodedBody());
     }
 
     /**
@@ -88,7 +93,6 @@ trait Message
      * <code>
      * $params = [
      *       'chat_id'                     => '',                      // int|string       - Required. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
-     *       'from_chat_id'                => '',                      // int              - Required. Unique identifier for the chat where the original message was sent (or channel username in the format "@channelusername")
      *       'photo'                       => InputFile::file($file),  // InputFile|string - Required. Photo to send. Pass a file_id as String to send a photo that exists on the Bale servers (recommended), pass an HTTP URL as a String for Bale to get a photo from the Internet, or upload a new photo using multipart/form-data.
      *       'caption'                     => '',                      // string           - (Optional). Photo caption (may also be used when resending photos by file_id), 0-200 characters
      *       'reply_to_message_id'         => '',                      // int              - (Optional). If the message is a reply, ID of the original message
@@ -118,9 +122,9 @@ trait Message
      *       'reply_to_message_id'         => '',                      // int              - (Optional). If the message is a reply, ID of the original message
      *       'reply_markup'                => '',                      // string           - (Optional). Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.
      * ]
+     * </code>
      *
      * @link https://docs.bale.ai/#sendaudio
-     * </code>
      *
      * @throws BaleSDKException
      */
@@ -272,5 +276,25 @@ trait Message
         $response = $this->post('sendContact', $params);
 
         return new MessageObject($response->getDecodedBody());
+    }
+
+    /**
+     * Tell the user that something is happening on the bot's side.
+     * The status is set for 5 seconds or less (when a message arrives from your bot, Bale clients clear its typing status).
+     *
+     * <code>
+     * $params = [
+     *       'chat_id' => '',  // int|string - Required. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
+     *       'action'  => '',  // string     - Required. Type of action to broadcast. Choose one, depending on what the user is about to receive: typing, upload_photo, record_video, upload_video, record_audio, upload_audio, upload_document, find_location, record_video_note, upload_video_note.
+     * ]
+     * </code>
+     *
+     * @link https://docs.bale.ai/#sendchataction
+     *
+     * @throws BaleSDKException
+     */
+    public function sendChatAction(array $params): bool
+    {
+        return $this->post('sendChatAction', $params)->getResult();
     }
 }

@@ -3,7 +3,8 @@
 namespace EFive\Bale\Methods;
 
 use EFive\Bale\Exceptions\BaleSDKException;
-use EFive\Bale\Objects\Chat as ChatObject;
+use EFive\Bale\Objects\ChatFullInfo;
+use EFive\Bale\Objects\ChatMember\ChatMember;
 use EFive\Bale\Traits\Http;
 
 /**
@@ -14,20 +15,18 @@ use EFive\Bale\Traits\Http;
 trait Chat
 {
     /**
-     * Ban a user in a group, a supergroup or a channel
+     * Ban a user in a group, a supergroup or a channel.
      *
      * In the case of supergroups, the user will not be able to return to the group on their own using
      * invite links etc., unless unbanned first.
      *
      * The bot must be an administrator in the group for this to work.
      *
-     * Note: This will method only work if the ‘All Members Are Admins’ setting is off in the target group.
-     * Otherwise members may only be removed by the group's creator or by the member that added them.
-     *
      * <code>
      * $params = [
      *      'chat_id'         => '',  // int|string - Required. Unique identifier for the target group or username of the target supergroup (in the format "@supergroupusername")
      *      'user_id'         => '',  // int        - Required. Unique identifier of the target user.
+     *      'until_date'      => '',  // int        - (Optional). Date when the user will be unbanned; unix time.
      * ]
      * </code>
      *
@@ -37,21 +36,19 @@ trait Chat
      */
     public function banChatMember(array $params): bool
     {
-        return $this->get('banChatMember', $params)->getResult();
+        return $this->post('banChatMember', $params)->getResult();
     }
 
     /**
-     * Unban a previously kicked user in a supergroup.
+     * Unban a previously banned user in a supergroup or channel.
      *
-     * The user will not return to the group automatically, but will be able to join via link, etc.
-     *
-     * The bot must be an administrator in the group for this to work.
+     * The bot must be an administrator for this to work.
      *
      * <code>
      * $params = [
-     *      'chat_id'        => '',  // int|string - Unique identifier for the target group or username of the target supergroup (in the format "@supergroupusername")
-     *      'user_id'        => '',  // int        - Unique identifier of the target user.
-     *      'only_if_banned' => '',  // bool       - (Optional). Do nothing if the user is not banned
+     *      'chat_id'         => '',  // int|string - Required. Unique identifier for the target group or username of the target supergroup (in the format "@supergroupusername")
+     *      'user_id'         => '',  // int        - Required. Unique identifier of the target user.
+     *      'only_if_banned'  => '',  // bool       - (Optional). Do nothing if the user is not banned.
      * ]
      * </code>
      *
@@ -61,27 +58,27 @@ trait Chat
      */
     public function unbanChatMember(array $params): bool
     {
-        return $this->get('unbanChatMember', $params)->getResult();
+        return $this->post('unbanChatMember', $params)->getResult();
     }
 
     /**
      * Promote or demote a user in a supergroup or a channel.
      *
-     * Pass False for all boolean parameters to demote a user.
-     *
-     * The bot must be an administrator in the group for this to work.
+     * The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
      *
      * <code>
      * $params = [
-     *      'chat_id'                => '',  // int|string - Required. Unique identifier for the target group or username of the target supergroup (in the format "@supergroupusername")
-     *      'user_id'                => '',  // int        - Required. Unique identifier of the target user.
-     *      'can_change_info'        => '',  // bool       - (Optional). Pass True, if the administrator can change chat title, photo and other settings
-     *      'can_post_messages'      => '',  // bool       - (Optional). Pass True, if the administrator can create channel posts, channels only
-     *      'can_edit_messages'      => '',  // bool       - (Optional). Pass True, if the administrator can edit messages of other users, channels only
-     *      'can_delete_messages'    => '',  // bool       - (Optional). Pass True, if the administrator can delete messages of other users
-     *      'can_manage_video_chats' => '',  // bool       - (Optional). Pass True, if the administrator can manage video calls
-     *      'can_invite_users'       => '',  // bool       - (Optional). Pass True, if the administrator can invite new users to the chat
-     *      'can_restrict_members'   => '',  // bool       - (Optional). Pass True, if the administrator can restrict, ban or unban chat members
+     *      'chat_id'              => '',  // int|string - Required. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
+     *      'user_id'              => '',  // int        - Required. Unique identifier of the target user
+     *      'is_anonymous'         => '',  // bool       - (Optional). Pass True, if the administrator's presence in the chat is hidden
+     *      'can_manage_chat'      => '',  // bool       - (Optional). Pass True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode.
+     *      'can_post_messages'    => '',  // bool       - (Optional). Pass True, if the administrator can post in the channel; channels only
+     *      'can_edit_messages'    => '',  // bool       - (Optional). Pass True, if the administrator can edit messages of other users and can pin messages; channels only
+     *      'can_delete_messages'  => '',  // bool       - (Optional). Pass True, if the administrator can delete messages of other users
+     *      'can_promote_members'  => '',  // bool       - (Optional). Pass True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+     *      'can_change_info'      => '',  // bool       - (Optional). Pass True, if the administrator can change chat title, photo and other settings
+     *      'can_invite_users'     => '',  // bool       - (Optional). Pass True, if the administrator can invite new users to the chat
+     *      'can_pin_messages'     => '',  // bool       - (Optional). Pass True, if the administrator can pin messages, supergroups only
      * ]
      * </code>
      *
@@ -147,11 +144,35 @@ trait Chat
      *
      * @throws BaleSDKException
      */
-    public function getChat(array $params): ChatObject
+    public function getChat(array $params): ChatFullInfo
     {
         $response = $this->get('getChat', $params);
 
-        return new ChatObject($response->getDecodedBody());
+        return new ChatFullInfo($response->getDecodedBody());
+    }
+
+    /**
+     * Get a list of administrators in a chat, which aren't bots.
+     *
+     * <code>
+     * $params = [
+     *      'chat_id'  => '',  // string|int - Unique identifier for the target chat or username of the target supergroup or channel (in the format "@channelusername")
+     * ]
+     * </code>
+     *
+     * @link https://docs.bale.ai/#getchatadministrators
+     *
+     * @return ChatMember[]
+     *
+     * @throws BaleSDKException
+     */
+    public function getChatAdministrators(array $params): array
+    {
+        $response = $this->get('getChatAdministrators', $params);
+
+        return collect($response->getResult())
+            ->map(fn ($data): ChatMember => ChatMember::factory($data))
+            ->all();
     }
 
     /**
@@ -167,9 +188,42 @@ trait Chat
      *
      * @throws BaleSDKException
      */
+    public function getChatMembersCount(array $params): int
+    {
+        return $this->get('getChatMembersCount', $params)->getResult();
+    }
+
+    /**
+     * Alias of getChatMembersCount.
+     *
+     * @link https://docs.bale.ai/#getchatmemberscount
+     *
+     * @throws BaleSDKException
+     */
     public function getChatMemberCount(array $params): int
     {
-        return $this->get('getChatMemberCount', $params)->getResult();
+        return $this->getChatMembersCount($params);
+    }
+
+    /**
+     * Get information about a member of a chat.
+     *
+     * <code>
+     * $params = [
+     *      'chat_id'  => '',  // string|int - Required. Unique identifier for the target chat or username of the target supergroup or channel (in the format "@channelusername")
+     *      'user_id'  => '',  // int        - Required. Unique identifier of the target user
+     * ]
+     * </code>
+     *
+     * @link https://docs.bale.ai/#getchatmember
+     *
+     * @throws BaleSDKException
+     */
+    public function getChatMember(array $params): ChatMember
+    {
+        $response = $this->get('getChatMember', $params);
+
+        return ChatMember::factory($response->getResult());
     }
 
     /**
@@ -303,7 +357,7 @@ trait Chat
     }
 
     /**
-     * Create an additional invite link for a chat
+     * Create an additional invite link for a chat.
      *
      * The bot must be an administrator in the group for this to work.
      *

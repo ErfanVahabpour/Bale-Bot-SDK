@@ -68,14 +68,14 @@ abstract class BaseObject extends Collection
             return $this->getRelationValue($property, $value);
         }
 
-        /** @var BaseObject $class */
-        $class = 'EFive\Bale\Objects\\'.Str::studly($property);
-
-        if (class_exists($class)) {
-            return $class::make($value);
-        }
-
         if (is_array($value)) {
+            /** @var BaseObject $class */
+            $class = 'EFive\Bale\Objects\\'.Str::studly($property);
+
+            if (class_exists($class)) {
+                return $class::make($value);
+            }
+
             return BaleObject::make($value);
         }
 

@@ -27,13 +27,62 @@ trait EditMessage
      *
      * @link https://docs.bale.ai/#editmessagetext
      *
-     * @return Message|bool
+     * @return Message
      *
      * @throws BaleSDKException
      */
     public function editMessageText(array $params): Message
     {
         $response = $this->post('editMessageText', $params);
+
+        return new Message($response->getDecodedBody());
+    }
+
+    /**
+     * Edit captions of messages sent by the bot or via the bot (for inline bots).
+     *
+     * <code>
+     * $params = [
+     *       'chat_id'                   => '',  // int|string - (Optional). Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
+     *       'message_id'                => '',  // int        - (Optional). Required if inline_message_id is not specified. Identifier of the sent message
+     *       'caption'                   => '',  // string     - (Optional). New caption of the message, 0-1024 characters.
+     *       'reply_markup'              => '',  // string     - (Optional). A JSON-serialized object for an inline keyboard.
+     * ]
+     * </code>
+     *
+     * @link https://docs.bale.ai/#editmessagecaption
+     *
+     * @return Message
+     *
+     * @throws BaleSDKException
+     */
+    public function editMessageCaption(array $params): Message
+    {
+        $response = $this->post('editMessageCaption', $params);
+
+        return new Message($response->getDecodedBody());
+    }
+
+    /**
+     * Edit only the reply markup of messages sent by the bot or via the bot (for inline bots).
+     *
+     * <code>
+     * $params = [
+     *       'chat_id'                   => '',  // int|string - (Optional). Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format "@channelusername")
+     *       'message_id'                => '',  // int        - (Optional). Required if inline_message_id is not specified. Identifier of the sent message
+     *       'reply_markup'              => '',  // string     - (Optional). A JSON-serialized object for an inline keyboard.
+     * ]
+     * </code>
+     *
+     * @link https://docs.bale.ai/#editmessagereplymarkup
+     *
+     * @return Message
+     *
+     * @throws BaleSDKException
+     */
+    public function editMessageReplyMarkup(array $params): Message
+    {
+        $response = $this->post('editMessageReplyMarkup', $params);
 
         return new Message($response->getDecodedBody());
     }
@@ -61,7 +110,7 @@ trait EditMessage
      *
      * @throws BaleSDKException
      */
-    public function deleteMessage(array $params)
+    public function deleteMessage(array $params): bool
     {
         return $this->post('deleteMessage', $params)->getResult();
     }

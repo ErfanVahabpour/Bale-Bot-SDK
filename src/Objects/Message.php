@@ -2,6 +2,9 @@
 
 namespace EFive\Bale\Objects;
 
+use EFive\Bale\Objects\Payments\Invoice;
+use EFive\Bale\Objects\Payments\SuccessfulPayment;
+
 /**
  * Class Message.
  *
@@ -18,6 +21,7 @@ namespace EFive\Bale\Objects;
  * @property Message|null $reply_to_message (Optional). For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
  * @property int|null $edite_date (Optional). Date the message was last edited in Unix time.
  * @property string|null $text (Optional). For text messages, the actual UTF-8 text of the message, 0-4096 characters.
+ * @property MessageEntity[]|null $entities (Optional). For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text.
  * @property Animation|null $animation (Optional). Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set
  * @property Audio|null $audio (Optional). Message is an audio file, information about the file.
  * @property Document|null $document (Optional). Message is a general file, information about the file.
@@ -32,6 +36,7 @@ namespace EFive\Bale\Objects;
  * @property User|null $left_chat_member (Optional). A member was removed from the group, information about them (this member may be the bot itself).
  * @property Invoice|null $invoice (Optional). Message is an invoice for a payment, information about the invoice.
  * @property SuccessfulPayment|null $successful_payment (Optional). Message is a service message about a successful payment, information about the payment.
+ * @property WebAppData|null $web_app_data (Optional). Service message: data sent by a Web App.
  * @property string|null $reply_markup (Optional). Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.
  */
 class Message extends BaseObject
@@ -79,7 +84,7 @@ class Message extends BaseObject
     /**
      * {@inheritdoc}
      *
-     * @return array{from: string, chat: string, forward_from: string, forward_from_chat: string, reply_to_message: class-string<Message>, audio: string, animation: string, document: string, photo: string[], sticker: string, video: string, voice: string, contact: string, location: string, new_chat_member: string, new_chat_members: string[], left_chat_member: string, invoice: string, successful_payment: string}
+     * @return array{from: string, chat: string, forward_from: string, forward_from_chat: string, reply_to_message: class-string<Message>, audio: string, animation: string, document: string, photo: string[], sticker: string, video: string, voice: string, contact: string, location: string, new_chat_member: string, new_chat_members: string[], left_chat_member: string, entities: string[], invoice: string, successful_payment: string, web_app_data: string}
      */
     public function relations(): array
     {
@@ -100,8 +105,10 @@ class Message extends BaseObject
             'location' => Location::class,
             'new_chat_members' => [User::class],
             'left_chat_member' => User::class,
-            // 'invoice' => Invoice::class,
-            // 'successful_payment' => SuccessfulPayment::class
+            'entities' => [MessageEntity::class],
+            'invoice' => Invoice::class,
+            'successful_payment' => SuccessfulPayment::class,
+            'web_app_data' => WebAppData::class,
         ];
     }
 

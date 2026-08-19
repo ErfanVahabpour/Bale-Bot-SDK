@@ -2,6 +2,7 @@
 
 namespace EFive\Bale\Objects;
 
+use EFive\Bale\Objects\Payments\PreCheckoutQuery;
 use Illuminate\Support\Collection;
 
 /**
@@ -9,15 +10,15 @@ use Illuminate\Support\Collection;
  *
  * @link https://docs.bale.ai/#update
  *
- * @property int $update_id The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially.
- * @property Message|null $message (Optional). New incoming message of any kind - text, photo, sticker, etc.
- * @property EditedMessage|null $edited_message (Optional). New version of a message that is known to the bot and was edited.
- * @property CallbackQuery|null $callback_query (Optional). Incoming callback query.
+ * @property int $update_id The update's unique identifier.
+ * @property Message|null $message (Optional). New incoming message of any kind — text, photo, sticker, etc.
+ * @property Message|null $edited_message (Optional). New version of a message that is known to the bot and was edited.
+ * @property CallbackQuery|null $callback_query (Optional). New incoming callback query.
+ * @property PreCheckoutQuery|null $pre_checkout_query (Optional). New incoming pre-checkout query. Contains full information about checkout.
  */
 class Update extends BaseObject
 {
-    /** @var string|null Cached type of thr Update () */
-    protected ?string $updateType = null;
+    private ?string $updateType = null;
 
     /**
      * @var string[]
@@ -25,14 +26,14 @@ class Update extends BaseObject
     protected const TYPES = [
         'message',
         'edited_message',
-        'inline_query',
         'callback_query',
+        'pre_checkout_query',
     ];
 
     /**
      * {@inheritdoc}
      *
-     * @return array{message: string, edited_message: string, callback_query: string}
+     * @return array{message: string, edited_message: string, callback_query: string, pre_checkout_query: string}
      */
     public function relations(): array
     {
@@ -40,16 +41,8 @@ class Update extends BaseObject
             'message' => Message::class,
             'edited_message' => Message::class,
             'callback_query' => CallbackQuery::class,
+            'pre_checkout_query' => PreCheckoutQuery::class,
         ];
-    }
-
-    /**
-     * @deprecated Will be removed in SDK v4
-     * Get recent message.
-     */
-    public function recentMessage(): self
-    {
-        return new self($this->last());
     }
 
     /**

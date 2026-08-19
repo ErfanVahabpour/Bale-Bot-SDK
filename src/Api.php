@@ -37,7 +37,7 @@ class Api
     use Http;
 
     /** @var string Version number of the Bale Bot PHP SDK. */
-    public const VERSION = '1.0.2';
+    public const VERSION = '2.0.0';
 
     /** @var string The name of the environment variable that contains the Bale Bot API Access Token. */
     public const BOT_TOKEN_ENV_NAME = 'BALE_BOT_TOKEN';
@@ -47,9 +47,8 @@ class Api
     /**
      * Instantiates a new Bale super-class object.
      *
-     *
      * @param  string|null  $token  The Bale Bot API Access Token.
-     * @param  string|null  $baseBotUrl  (Optional) Custom base bot url.
+     * @param  bool  $async  (Optional) Asynchronous request.
      * @param  HttpClientInterface|null  $httpClientHandler  (Optional) Custom HTTP Client Handler.
      * @param  string|null  $baseBotUrl  (Optional) Custom base bot url.
      *

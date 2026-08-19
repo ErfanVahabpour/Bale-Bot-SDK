@@ -2,10 +2,8 @@
 
 namespace EFive\Bale\Laravel;
 
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Lumen\Application as LumenApplication;
 use EFive\Bale\Api;
 use EFive\Bale\BotsManager;
 use EFive\Bale\Laravel\Artisan\WebhookCommand;
@@ -13,7 +11,7 @@ use EFive\Bale\Laravel\Artisan\WebhookCommand;
 /**
  * Class BaleServiceProvider.
  */
-final class BaleServiceProvider extends ServiceProvider implements DeferrableProvider
+final class BaleServiceProvider extends ServiceProvider
 {
     /**
      * Register the service provider.
@@ -43,8 +41,6 @@ final class BaleServiceProvider extends ServiceProvider implements DeferrablePro
             $this->publishes([
                 __DIR__.'/config/bale.php' => config_path('bale.php'),
             ], 'bale-config');
-        } elseif ($this->app instanceof LumenApplication) {
-            $this->app->configure('bale');
         }
     }
 
@@ -77,7 +73,7 @@ final class BaleServiceProvider extends ServiceProvider implements DeferrablePro
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [BotsManager::class, Api::class, 'bale', 'bale.bot'];
     }

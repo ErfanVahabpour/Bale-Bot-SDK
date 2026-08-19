@@ -24,18 +24,13 @@ trait Update
      * $params = [
      *   'offset'  => '',
      *   'limit'   => '',
+     *   'timeout' => '',
      * ];
      * </code>
      *
      * @link https://docs.bale.ai/#getupdates
      *
-     * @param  array  $params  [
-     *
-     * @var int Optional. Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as getUpdates is called with an offset higher than its update_id. The negative offset can be specified to retrieve updates starting from -offset update from the end of the updates queue. All previous updates will forgotten.
-     * @var int Optional. Limits the number of updates to be retrieved. Values between 1—100 are accepted. Defaults to 100.
-     *
-     * ]
-     *
+     * @param  array  $params
      * @return UpdateObject[]
      *
      * @throws BaleSDKException
@@ -68,11 +63,8 @@ trait Update
      *
      * @link https://docs.bale.ai/#setwebhook
      *
-     * @param  array  $params  [
-     *
-     * @var string Required. HTTPS url to send updates to. Use an empty string to remove webhook integration
-     *
-     * ]
+     * @param  array  $params
+     * @return bool
      *
      * @throws BaleSDKException
      */
@@ -84,17 +76,30 @@ trait Update
     }
 
     /**
-     * remove webhook.
+     * Use this method to remove webhook integration if you decide to switch back to getUpdates.
      *
+     * @link https://docs.bale.ai/#deletewebhook
      *
-     * @link https://docs.bale.ai/#removeWebhook
+     * @param  array  $params
+     * @return bool
      *
+     * @throws BaleSDKException
+     */
+    public function deleteWebhook(array $params = []): bool
+    {
+        return $this->post('deleteWebhook', $params)->getResult();
+    }
+
+    /**
+     * Remove webhook (alias/backward compatibility).
+     *
+     * @link https://docs.bale.ai/#deletewebhook
      *
      * @throws BaleSDKException
      */
     public function removeWebhook(): bool
     {
-        return $this->post('setWebhook', ['url' => ""])->getResult();
+        return $this->deleteWebhook();
     }
 
     /**
