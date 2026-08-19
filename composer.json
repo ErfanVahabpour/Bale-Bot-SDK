@@ -55,6 +55,9 @@
             "EFive\\Bale\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "phpunit"
+    },
     "extra": {
         "laravel": {
             "aliases": {
