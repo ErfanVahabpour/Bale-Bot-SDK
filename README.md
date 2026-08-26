@@ -13,45 +13,80 @@
 
 <br />
 
-[Features](#-key-features) •
-[Installation](#-installation) •
-[Laravel Setup](#-laravel-integration) •
-[Quickstart](#-quick-start) •
-[Usage Examples](#-usage-examples) •
-[API Reference](#-api-method-reference) •
-[Testing](#-testing) •
-[License](#-license)
+🌐 **Language / زبان:** **English** | [**فارسی (Persian)**](README.fa.md)
 
 </div>
 
 ---
 
+## 🌟 Overview
+
+**Bale Bot PHP SDK** is an enterprise-grade, developer-friendly PHP library designed to seamlessly interact with the [Bale Messenger Bot API](https://docs.bale.ai/). Whether you are building an e-commerce assistant, customer support bot, payment automation service, or interactive mini-app in Standalone PHP or Laravel, this SDK offers an expressive, robust, and strongly-typed toolkit.
+
+---
+
 ## ✨ Key Features
 
-- ⚡ **Complete API Coverage** — Full support for all official endpoints from [docs.bale.ai](https://docs.bale.ai/) (Messages, Media, Chats, Webhooks, Payments, Commands, Stickers).
-- 🚀 **Laravel 10, 11, 12 & 13 Ready** — Auto-discovered Service Provider, Facade (`Bale::`), and config publishing.
-- 🤖 **Multi-Bot Management** — Seamlessly manage and toggle between multiple bot instances in a single application.
-- 🎯 **Webhook & Long Polling** — Simple webhook handling in controllers and CLI polling with event dispatching.
-- 💳 **Bale Payments** — Create invoice links, send invoices, handle `pre_checkout_query`, and inquire transaction statuses.
-- 💬 **Interactive Keyboards & Mini-Apps** — Support for Inline Keyboards, Reply Keyboards, Web Apps (`WebAppData`, `WebAppInfo`), and Copy Text buttons.
-- 🔔 **Event Dispatcher** — Built-in event system powered by `Illuminate\Events` for clean decoupled update handling.
-- 🛡️ **Modern & Secure** — Built for PHP 8.2+, strictly typed, fully covered by automated PHPUnit tests.
+- ⚡ **Complete API Coverage** — 100% full implementation of all official endpoints from [docs.bale.ai](https://docs.bale.ai/) (Messages, Media, Chats, Webhooks, Payments, Commands, Stickers).
+- 🚀 **First-Class Laravel Support** — Auto-discovered Service Provider, Facade (`Bale::`), configuration publishing, Artisan CLI helpers, and IoC container resolution.
+- 🤖 **Multi-Bot Manager** — Effortlessly configure and switch between multiple bot accounts in a single codebase (`Bale::bot('support_bot')`).
+- 🎯 **Flexible Update Handling** — Built-in support for Webhook handling and Long-Polling CLI runners.
+- 💳 **Bale In-App Payments** — Create digital invoice links, send structured invoices, handle pre-checkout verification, and query transaction statuses.
+- 💬 **Interactive UI & Mini-Apps** — Support for Inline Keyboards, Reply Keyboards, WebApps / Mini-Apps (`WebAppInfo`), and Copy Text buttons.
+- 🧠 **Command Bus System** — Create modular, self-contained Command classes with regex pattern arguments and automatic dependency injection.
+- 🔔 **Event-Driven Architecture** — Decoupled event dispatcher (`UpdateWasReceived`) powered by `Illuminate\Events`.
+- ⚡ **Async Requests & Custom Clients** — Make non-blocking asynchronous HTTP calls or plug in custom HTTP client handlers.
+- 🛡️ **Modern & Secure** — Built for PHP 8.2+, strictly typed objects (`BaseObject`), and backed by comprehensive PHPUnit test suites.
+
+---
+
+## 📖 Table of Contents
+
+- [Requirements](#-requirements)
+- [Installation](#-installation)
+- [Laravel Integration](#-laravel-integration)
+  - [1. Publish Configuration](#1-publish-configuration)
+  - [2. Configure Environment Variables](#2-configure-environment-variables)
+  - [3. Multi-Bot Configuration](#3-multi-bot-configuration)
+  - [4. Artisan CLI Commands](#4-artisan-cli-commands)
+- [Quick Start](#-quick-start)
+  - [In Standalone PHP](#in-standalone-php)
+  - [In Laravel](#in-laravel)
+- [Comprehensive Usage Guide](#-comprehensive-usage-guide)
+  - [1. Sending & Managing Messages](#1-sending--managing-messages)
+  - [2. Interactive Keyboards & Mini-Apps](#2-interactive-keyboards--mini-apps)
+  - [3. Media & File Uploads](#3-media--file-uploads)
+  - [4. Chat Actions & Typing Status](#4-chat-actions--typing-status)
+  - [5. Chat, Group & Channel Administration](#5-chat-group--channel-administration)
+  - [6. Webhooks & Polling Update Handling](#6-webhooks--polling-update-handling)
+  - [7. Command Bus & Custom Commands](#7-command-bus--custom-commands)
+  - [8. Bale In-App Payments & Invoices](#8-bale-in-app-payments--invoices)
+  - [9. Stickers & Custom Sticker Sets](#9-stickers--custom-sticker-sets)
+  - [10. Bot Commands Menu Management](#10-bot-commands-menu-management)
+  - [11. Event Dispatcher & Listeners](#11-event-dispatcher--listeners)
+  - [12. Error & Exception Handling](#12-error--exception-handling)
+  - [13. Advanced Configuration & Custom Clients](#13-advanced-configuration--custom-clients)
+- [API Method Reference](#-api-method-reference)
+- [Testing](#-testing)
+- [Contributing](#-contributing)
+- [Funding & Support](#-funding--support)
+- [License & Disclaimer](#-license--disclaimer)
 
 ---
 
 ## 📋 Requirements
 
-| Requirement | Minimum Version |
-|---|---|
-| **PHP** | `>= 8.2` |
-| **Laravel** *(optional)* | `^10.0 \| ^11.0 \| ^12.0 \| ^13.0` |
-| **Required PHP Extensions** | `ext-json`, `ext-curl`, `ext-mbstring` |
+| Requirement | Minimum Version | Notes |
+|---|---|---|
+| **PHP** | `>= 8.2` | PHP 8.2, 8.3, 8.4+ supported |
+| **Laravel** *(Optional)* | `^10.0 \| ^11.0 \| ^12.0 \| ^13.0` | For Laravel-based projects |
+| **Extensions** | `ext-json`, `ext-curl`, `ext-mbstring` | Required PHP core extensions |
 
 ---
 
 ## 📦 Installation
 
-Install the package via Composer:
+Install the package via Composer into your project:
 
 ```bash
 composer require erfanvahabpour/bale-bot-sdk
@@ -63,25 +98,28 @@ composer require erfanvahabpour/bale-bot-sdk
 
 ### 1. Publish Configuration
 
-The package automatically registers its Service Provider and `Bale` Facade. Publish the configuration file:
+The package registers `EFive\Bale\Laravel\BaleServiceProvider` and the `Bale` Facade automatically. Publish the configuration file:
 
 ```bash
 php artisan vendor:publish --tag="bale-config"
 ```
 
-This creates `config/bale.php`.
+This publishes `config/bale.php` into your Laravel application.
 
 ### 2. Configure Environment Variables
 
-Add your bot token to your `.env` file:
+Add your bot token and optional parameters to your `.env` file:
 
 ```env
-BALE_BOT_TOKEN=your_bot_token_here
+BALE_BOT_TOKEN=123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ
+BALE_BOT_NAME=main_bot
+BALE_WEBHOOK_URL=https://yourdomain.com/api/bale/webhook
+BALE_ASYNC_REQUESTS=false
 ```
 
-### 3. Multi-Bot Configuration (Optional)
+### 3. Multi-Bot Configuration
 
-Configure multiple bots in `config/bale.php`:
+Configure single or multiple bots in `config/bale.php`:
 
 ```php
 return [
@@ -89,13 +127,62 @@ return [
 
     'bots' => [
         'main_bot' => [
-            'token' => env('BALE_BOT_TOKEN'),
+            'token'            => env('BALE_BOT_TOKEN'),
+            'certificate_path' => env('BALE_CERTIFICATE_PATH'),
+            'webhook_url'      => env('BALE_WEBHOOK_URL'),
+            'allowed_updates'  => null,
+            'commands'         => [
+                // Acme\Project\Commands\StartCommand::class,
+            ],
         ],
+
         'support_bot' => [
-            'token' => env('BALE_SUPPORT_BOT_TOKEN'),
+            'token'            => env('BALE_SUPPORT_BOT_TOKEN'),
+            'webhook_url'      => env('BALE_SUPPORT_WEBHOOK_URL'),
+            'commands'         => [
+                // Acme\Project\Commands\SupportTicketCommand::class,
+            ],
         ],
     ],
+
+    'async_requests' => env('BALE_ASYNC_REQUESTS', false),
+    'http_client_handler' => null,
+    'base_bot_url' => null,
+    'resolve_command_dependencies' => true,
+
+    'commands' => [
+        \EFive\Bale\Commands\HelpCommand::class,
+    ],
+
+    'command_groups' => [
+        // 'admin' => [Acme\Project\Commands\BanUserCommand::class],
+    ],
+
+    'shared_commands' => [
+        // 'start' => Acme\Project\Commands\StartCommand::class,
+    ],
 ];
+```
+
+### 4. Artisan CLI Commands
+
+Manage bot webhooks directly from the terminal:
+
+```bash
+# Setup webhook for the default bot
+php artisan bale:webhook --setup
+
+# Setup webhook for a specific bot
+php artisan bale:webhook support_bot --setup
+
+# Display current webhook status and info
+php artisan bale:webhook --info
+
+# Display webhook information for all configured bots
+php artisan bale:webhook --info --all
+
+# Remove active webhook
+php artisan bale:webhook --remove
 ```
 
 ---
@@ -105,19 +192,24 @@ return [
 ### In Standalone PHP
 
 ```php
+require_once __DIR__ . '/vendor/autoload.php';
+
 use EFive\Bale\Api;
 
 $bale = new Api('YOUR_BOT_TOKEN');
 
-// Test authentication
+// 1. Authenticate and retrieve bot profile
 $botUser = $bale->getMe();
-echo "Connected as @{$botUser->username} (ID: {$botUser->id})";
+echo "Connected as @{$botUser->username} (ID: {$botUser->id})
+";
 
-// Send a message
-$bale->sendMessage([
+// 2. Send a text message
+$message = $bale->sendMessage([
     'chat_id' => '123456789',
     'text'    => 'Hello from Bale Bot PHP SDK! 🚀',
 ]);
+
+echo "Message sent with ID: {$message->message_id}";
 ```
 
 ### In Laravel
@@ -131,81 +223,294 @@ Bale::sendMessage([
     'text'    => 'Hello from Laravel! 🎉',
 ]);
 
-// Or target a specific configured bot:
+// Or target a specific configured bot instance:
 Bale::bot('support_bot')->sendMessage([
     'chat_id' => '123456789',
-    'text'    => 'Support message',
+    'text'    => 'Support notification',
 ]);
 ```
 
 ---
 
-## 💡 Usage Examples
+## 💡 Comprehensive Usage Guide
 
-### 1. Sending Messages with Inline Keyboards
+### 1. Sending & Managing Messages
 
+#### Plain & Formatted Messages
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+$response = Bale::sendMessage([
+    'chat_id'                  => '123456789',
+    'text'                     => '<b>Bold</b>, <i>Italic</i>, and <code>Code</code> message!',
+    'parse_mode'               => 'HTML', // or 'Markdown'
+    'disable_web_page_preview' => false,
+]);
+```
+
+#### Forwarding & Copying Messages
+```php
+// Forward message (with original sender header)
+Bale::forwardMessage([
+    'chat_id'      => 'TARGET_CHAT_ID',
+    'from_chat_id' => 'SOURCE_CHAT_ID',
+    'message_id'   => 1024,
+]);
+
+// Copy message (without forward header)
+$copiedId = Bale::copyMessage([
+    'chat_id'      => 'TARGET_CHAT_ID',
+    'from_chat_id' => 'SOURCE_CHAT_ID',
+    'message_id'   => 1024,
+    'caption'      => 'New custom caption for copied media',
+]);
+```
+
+#### Editing & Deleting Messages
+```php
+// Edit message text
+Bale::editMessageText([
+    'chat_id'    => '123456789',
+    'message_id' => 1024,
+    'text'       => 'Updated text content.',
+]);
+
+// Edit media caption
+Bale::editMessageCaption([
+    'chat_id'    => '123456789',
+    'message_id' => 1024,
+    'caption'    => 'Updated photo caption.',
+]);
+
+// Delete message
+Bale::deleteMessage([
+    'chat_id'    => '123456789',
+    'message_id' => 1024,
+]);
+```
+
+---
+
+### 2. Interactive Keyboards & Mini-Apps
+
+#### Inline Keyboards (Buttons attached to messages)
 ```php
 use EFive\Bale\Laravel\Facades\Bale;
 
 $replyMarkup = [
     'inline_keyboard' => [
         [
-            ['text' => '🌐 Open Website', 'url' => 'https://bale.ai'],
-            ['text' => '👍 Like', 'callback_data' => 'action_like'],
+            ['text' => '🌐 Visit Website', 'url' => 'https://bale.ai'],
+            ['text' => '🔔 Subscribe', 'callback_data' => 'action_subscribe'],
         ],
         [
-            ['text' => '🚀 Launch Mini-App', 'web_app' => ['url' => 'https://app.example.com']],
+            // Open a Bale WebApp / Mini-App
+            ['text' => '📱 Launch Mini-App', 'web_app' => ['url' => 'https://miniapp.example.com']],
+            // Copy text button
+            ['text' => '📋 Copy Promo Code', 'copy_text' => ['text' => 'DISCOUNT2026']],
         ],
     ],
 ];
 
 Bale::sendMessage([
     'chat_id'      => '123456789',
-    'text'         => 'Choose an option below:',
+    'text'         => 'Select an option from the menu:',
     'reply_markup' => $replyMarkup,
 ]);
 ```
 
-### 2. Sending Photos & Media Files
+#### Reply Keyboards (Custom bottom input buttons)
+```php
+$replyKeyboard = [
+    'keyboard' => [
+        [
+            ['text' => '📦 View Products'],
+            ['text' => '📞 Contact Us'],
+        ],
+        [
+            ['text' => '📍 Send Location', 'request_location' => true],
+            ['text' => '📱 Share Phone Number', 'request_contact' => true],
+        ],
+    ],
+    'resize_keyboard'   => true,
+    'one_time_keyboard' => false,
+];
 
-Upload local files, stream resources, or send existing `file_id`s:
+Bale::sendMessage([
+    'chat_id'      => '123456789',
+    'text'         => 'Welcome! Choose a menu action:',
+    'reply_markup' => $replyKeyboard,
+]);
+
+// Remove Reply Keyboard
+Bale::sendMessage([
+    'chat_id'      => '123456789',
+    'text'         => 'Keyboard removed.',
+    'reply_markup' => ['remove_keyboard' => true],
+]);
+```
+
+---
+
+### 3. Media & File Uploads
+
+The SDK provides the flexible `InputFile` helper which supports local files, remote URLs, raw string contents, or open stream resources.
 
 ```php
 use EFive\Bale\FileUpload\InputFile;
 use EFive\Bale\Laravel\Facades\Bale;
 
-// Upload local image
+// 1. Send Photo from local filesystem
 Bale::sendPhoto([
     'chat_id' => '123456789',
-    'photo'   => InputFile::file('/path/to/image.png'),
-    'caption' => 'Check out this photo! 📸',
+    'photo'   => InputFile::file('/path/to/banner.jpg'),
+    'caption' => 'Check out our new release! 📸',
 ]);
 
-// Send document from raw string content on the fly
+// 2. Send Document from dynamic string content
 Bale::sendDocument([
     'chat_id'  => '123456789',
-    'document' => InputFile::createFromContents('Invoice #10023...', 'invoice.txt'),
-    'caption'  => 'Your invoice document',
+    'document' => InputFile::createFromContents('Invoice Data: ...', 'invoice_982.txt'),
+    'caption'  => 'Your monthly statement',
 ]);
 
-// Send Chat Action (typing indicator)
-Bale::sendChatAction([
+// 3. Send Audio / MP3
+Bale::sendAudio([
+    'chat_id'   => '123456789',
+    'audio'     => InputFile::file('/path/to/podcast.mp3'),
+    'title'     => 'Episode 42',
+    'performer' => 'Bale Podcast',
+]);
+
+// 4. Send Video & GIF Animations
+Bale::sendVideo([
     'chat_id' => '123456789',
-    'action'  => 'upload_photo',
+    'video'   => InputFile::file('/path/to/demo.mp4'),
+    'caption' => 'Video tutorial 🎥',
+]);
+
+Bale::sendAnimation([
+    'chat_id'   => '123456789',
+    'animation' => InputFile::file('/path/to/sticker.gif'),
+]);
+
+// 5. Send Voice note
+Bale::sendVoice([
+    'chat_id' => '123456789',
+    'voice'   => InputFile::file('/path/to/voice.ogg'),
+]);
+
+// 6. Send Media Group (Album)
+Bale::sendMediaGroup([
+    'chat_id' => '123456789',
+    'media'   => [
+        [
+            'type'    => 'photo',
+            'media'   => InputFile::file('/path/to/image1.jpg'),
+            'caption' => 'Photo Album #1',
+        ],
+        [
+            'type'  => 'photo',
+            'media' => InputFile::file('/path/to/image2.jpg'),
+        ],
+    ],
 ]);
 ```
 
-### 3. Handling Webhooks in Laravel
+#### Downloading Files
+```php
+// Retrieve file metadata
+$file = Bale::getFile(['file_id' => 'FILE_ID_FROM_UPDATE']);
+echo "File size: {$file->file_size} bytes
+";
 
-Define a route in `routes/api.php` or `routes/web.php`:
+// Download file to local storage
+$savedPath = Bale::downloadFile($file, storage_path('app/downloads/' . basename($file->file_path)));
+```
+
+---
+
+### 4. Chat Actions & Typing Status
+
+Send temporary chat status indicators (e.g. typing, uploading photo, recording video):
+
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+// Possible actions: typing, upload_photo, record_video, upload_video, record_audio, upload_audio, upload_document, find_location
+Bale::sendChatAction([
+    'chat_id' => '123456789',
+    'action'  => 'typing',
+]);
+```
+
+---
+
+### 5. Chat, Group & Channel Administration
+
+Manage chats, admins, bans, permissions, and invite links:
+
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+$chatId = '-100123456789';
+
+// 1. Get Chat information and member count
+$chat = Bale::getChat(['chat_id' => $chatId]);
+$membersCount = Bale::getChatMembersCount(['chat_id' => $chatId]);
+
+// 2. Retrieve administrators list
+$admins = Bale::getChatAdministrators(['chat_id' => $chatId]);
+foreach ($admins as $admin) {
+    echo "{$admin->user->first_name} - Status: {$admin->status}
+";
+}
+
+// 3. Promote chat member
+Bale::promoteChatMember([
+    'chat_id'              => $chatId,
+    'user_id'              => 123456,
+    'can_change_info'      => true,
+    'can_delete_messages'  => true,
+    'can_invite_users'     => true,
+    'can_restrict_members' => false,
+    'can_pin_messages'     => true,
+    'can_promote_members'  => false,
+]);
+
+// 4. Ban & Unban members
+Bale::banChatMember(['chat_id' => $chatId, 'user_id' => 123456]);
+Bale::unbanChatMember(['chat_id' => $chatId, 'user_id' => 123456]);
+
+// 5. Pin and Unpin messages
+Bale::pinChatMessage(['chat_id' => $chatId, 'message_id' => 1024, 'disable_notification' => false]);
+Bale::unpinChatMessage(['chat_id' => $chatId, 'message_id' => 1024]);
+Bale::unpinAllChatMessages(['chat_id' => $chatId]);
+
+// 6. Manage Invite Links
+$newInvite = Bale::createChatInviteLink([
+    'chat_id'      => $chatId,
+    'expire_date'  => time() + 86400,
+    'member_limit' => 50,
+]);
+```
+
+---
+
+### 6. Webhooks & Polling Update Handling
+
+#### Webhook Controller in Laravel
+Define a webhook route in `routes/api.php`:
 
 ```php
 use Illuminate\Http\Request;
 use EFive\Bale\Laravel\Facades\Bale;
 
 Route::post('/bale/webhook', function (Request $request) {
+    // Automatically parses incoming request into Update object
     $update = Bale::getWebhookUpdate();
 
+    // 1. Handle incoming text message
     if ($update->isType('message')) {
         $message = $update->message;
         $chatId  = $message->chat->id;
@@ -214,15 +519,19 @@ Route::post('/bale/webhook', function (Request $request) {
         if ($text === '/start') {
             Bale::sendMessage([
                 'chat_id' => $chatId,
-                'text'    => "Welcome, {$message->from->first_name}!",
+                'text'    => "Hello {$message->from->first_name}! Welcome to our bot.",
             ]);
         }
-    } elseif ($update->isType('callback_query')) {
+    }
+
+    // 2. Handle Inline Button Callbacks
+    elseif ($update->isType('callback_query')) {
         $callback = $update->callbackQuery;
 
+        // Answer callback to remove loading state on button
         Bale::answerCallbackQuery([
             'callback_query_id' => $callback->id,
-            'text'              => 'Action received!',
+            'text'              => 'Action performed successfully! ✅',
             'show_alert'        => false,
         ]);
     }
@@ -231,117 +540,380 @@ Route::post('/bale/webhook', function (Request $request) {
 });
 ```
 
-### 4. Setting & Deleting Webhook
+#### Long Polling in CLI Workers
+For local development or daemon workers:
 
 ```php
-// Register webhook URL
-Bale::setWebhook([
-    'url' => 'https://yourdomain.com/api/bale/webhook',
-]);
+use EFive\Bale\Api;
 
-// Delete webhook
-Bale::deleteWebhook();
+$bale = new Api('YOUR_BOT_TOKEN');
 
-// Get current webhook info
-$info = Bale::getWebhookInfo();
-echo $info->url;
-```
+$offset = 0;
+while (true) {
+    $updates = $bale->getUpdates(['offset' => $offset, 'timeout' => 30]);
 
-### 5. Managing Chat Members & Admins
+    foreach ($updates as $update) {
+        $offset = $update->updateId + 1;
 
-```php
-// Get list of chat administrators
-$admins = Bale::getChatAdministrators(['chat_id' => '-100123456789']);
-foreach ($admins as $admin) {
-    echo "{$admin->user->first_name} ({$admin->status})\n";
+        if ($update->isType('message')) {
+            $bale->sendMessage([
+                'chat_id' => $update->message->chat->id,
+                'text'    => "Echo: " . $update->message->text,
+            ]);
+        }
+    }
+    sleep(1);
 }
-
-// Get specific member info
-$member = Bale::getChatMember([
-    'chat_id' => '-100123456789',
-    'user_id' => 123456,
-]);
-
-// Promote member
-Bale::promoteChatMember([
-    'chat_id'             => '-100123456789',
-    'user_id'             => 123456,
-    'can_delete_messages' => true,
-    'can_pin_messages'    => true,
-]);
-
-// Ban and Unban
-Bale::banChatMember(['chat_id' => '-100123456789', 'user_id' => 123456]);
-Bale::unbanChatMember(['chat_id' => '-100123456789', 'user_id' => 123456]);
 ```
 
-### 6. Payments & Invoices
+---
+
+### 7. Command Bus & Custom Commands
+
+The SDK includes a built-in Command Bus system. You can create organized Command classes that automatically resolve arguments, respond to updates, and leverage Laravel dependency injection.
+
+#### Creating a Custom Command
+Create a command class extending `EFive\Bale\Commands\Command`:
 
 ```php
-// 1. Send an invoice in chat
+namespace App\Bale\Commands;
+
+use EFive\Bale\Commands\Command;
+use App\Services\UserService;
+
+class StartCommand extends Command
+{
+    /** @var string Command trigger */
+    protected string $name = 'start';
+
+    /** @var string[] Aliases */
+    protected array $aliases = ['begin', 'welcome'];
+
+    /** @var string Description */
+    protected string $description = 'Start interaction with the bot';
+
+    /** @var string Argument Pattern (e.g. /start {ref}) */
+    protected string $pattern = '{ref}';
+
+    // Automatic Dependency Injection via Laravel Container!
+    public function __construct(protected UserService $userService)
+    {
+    }
+
+    public function handle(): void
+    {
+        $user = $this->getUpdate()->getMessage()->from;
+        $referral = $this->argument('ref', 'none');
+
+        $this->userService->registerOrUpdate($user->id, $user->username);
+
+        // Helper reply method (automatically populates chat_id)
+        $this->replyWithMessage([
+            'text' => "Welcome {$user->first_name}! (Referral: {$referral})",
+            'reply_markup' => [
+                'inline_keyboard' => [
+                    [['text' => '🚀 Get Started', 'callback_data' => 'get_started']]
+                ]
+            ]
+        ]);
+    }
+}
+```
+
+#### Registering & Processing Commands
+In `config/bale.php`:
+```php
+'commands' => [
+    \App\Bale\Commands\StartCommand::class,
+    \EFive\Bale\Commands\HelpCommand::class,
+],
+```
+
+In your webhook route:
+```php
+Route::post('/bale/webhook', function () {
+    // Process inbound commands automatically
+    Bale::commandsHandler(true);
+
+    return response()->json(['ok' => true]);
+});
+```
+
+---
+
+### 8. Bale In-App Payments & Invoices
+
+Integrate digital sales and payments natively within Bale Messenger using the Bale Banking API:
+
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+// 1. Send an Invoice in chat
 Bale::sendInvoice([
     'chat_id'        => '123456789',
-    'title'          => 'Premium Subscription',
-    'description'    => '1-month access to premium content',
-    'payload'        => 'sub_monthly_user_123',
-    'provider_token' => 'YOUR_PROVIDER_TOKEN',
+    'title'          => 'VIP Subscription',
+    'description'    => '1-Month access to VIP trading channel',
+    'payload'        => 'user_order_88319',
+    'provider_token' => 'YOUR_PAYMENT_PROVIDER_TOKEN',
     'prices'         => [
-        ['label' => 'Subtotal', 'amount' => 500000],
+        ['label' => 'Base Price', 'amount' => 500000], // Amount in Rials / Tomans
+        ['label' => 'Tax', 'amount' => 45000],
     ],
 ]);
 
-// 2. Generate a shareable invoice payment link
-$invoiceUrl = Bale::createInvoiceLink([
-    'title'          => 'Product Name',
-    'description'    => 'Product Description',
-    'payload'        => 'order_9988',
-    'provider_token' => 'YOUR_PROVIDER_TOKEN',
+// 2. Generate a shareable Invoice Link
+$paymentUrl = Bale::createInvoiceLink([
+    'title'          => 'E-Book Download',
+    'description'    => 'Full PDF Guide',
+    'payload'        => 'ebook_order_102',
+    'provider_token' => 'YOUR_PAYMENT_PROVIDER_TOKEN',
     'prices'         => [
-        ['label' => 'Price', 'amount' => 250000],
+        ['label' => 'Total', 'amount' => 150000],
     ],
 ]);
 
-// 3. Answer Pre-Checkout Query (in webhook)
+// 3. Handle Pre-Checkout Query in Webhook
 if ($update->isType('pre_checkout_query')) {
+    $queryId = $update->pre_checkout_query->id;
+
+    // Verify stock or condition and approve payment
     Bale::answerPreCheckoutQuery([
-        'pre_checkout_query_id' => $update->pre_checkout_query->id,
+        'pre_checkout_query_id' => $queryId,
         'ok'                    => true,
     ]);
 }
 
-// 4. Inquire transaction status
+// 4. Inquire Transaction Status
 $transaction = Bale::inquireTransaction([
-    'payment_charge_id' => 'chg_123456',
+    'payment_charge_id' => 'chg_sample_id_123',
 ]);
-echo "Status: {$transaction->status}";
+
+echo "Transaction Status: {$transaction->status}
+";
 ```
+
+---
+
+### 9. Stickers & Custom Sticker Sets
+
+```php
+use EFive\Bale\FileUpload\InputFile;
+use EFive\Bale\Laravel\Facades\Bale;
+
+// Send existing sticker by file_id
+Bale::sendSticker([
+    'chat_id' => '123456789',
+    'sticker' => 'STICKER_FILE_ID',
+]);
+
+// Upload sticker image file
+$file = Bale::uploadStickerFile([
+    'user_id'        => 123456,
+    'sticker'        => InputFile::file('/path/to/sticker.png'),
+    'sticker_format' => 'static',
+]);
+
+// Create new sticker set
+Bale::createNewStickerSet([
+    'user_id'  => 123456,
+    'name'     => 'animals_by_mybot',
+    'title'    => 'Cool Animals Pack',
+    'stickers' => [
+        [
+            'sticker'    => InputFile::file('/path/to/lion.png'),
+            'emoji_list' => ['🦁', '👑'],
+        ]
+    ],
+    'sticker_format' => 'static',
+]);
+```
+
+---
+
+### 10. Bot Commands Menu Management
+
+Configure the command hints displayed to users in the Bale Messenger chat menu:
+
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+// Set Bot Commands
+Bale::setMyCommands([
+    'commands' => [
+        ['command' => 'start', 'description' => 'Start the bot'],
+        ['command' => 'help', 'description' => 'Show help menu'],
+        ['command' => 'account', 'description' => 'Manage your subscription'],
+    ],
+]);
+
+// Retrieve registered commands
+$commands = Bale::getMyCommands();
+
+// Clear commands menu
+Bale::deleteMyCommands();
+```
+
+---
+
+### 11. Event Dispatcher & Listeners
+
+The SDK fires `EFive\Bale\Events\UpdateWasReceived` whenever an update is processed. In Laravel, you can register listeners in your `EventServiceProvider`:
+
+```php
+use EFive\Bale\Events\UpdateWasReceived;
+use App\Listeners\LogBaleUpdateListener;
+
+protected $listen = [
+    UpdateWasReceived::class => [
+        LogBaleUpdateListener::class,
+    ],
+];
+```
+
+In your listener:
+```php
+namespace App\Listeners;
+
+use EFive\Bale\Events\UpdateWasReceived;
+
+class LogBaleUpdateListener
+{
+    public function handle(UpdateWasReceived $event): void
+    {
+        $update = $event->update;
+        $botApi = $event->bale;
+
+        \Log::info('Received Bale Update ID: ' . $update->updateId);
+    }
+}
+```
+
+---
+
+### 12. Error & Exception Handling
+
+The SDK provides structured exceptions for robust error handling:
+
+```php
+use EFive\Bale\Exceptions\BaleSDKException;
+use EFive\Bale\Exceptions\BaleResponseException;
+use EFive\Bale\Exceptions\BaleBotNotFoundException;
+
+try {
+    $response = Bale::sendMessage([
+        'chat_id' => '123456789',
+        'text'    => 'Test message',
+    ]);
+} catch (BaleResponseException $e) {
+    // API returned error response
+    echo "HTTP Status: " . $e->getHttpStatusCode();
+    echo "Error Message: " . $e->getMessage();
+    echo "Error Code: " . $e->getErrorCode();
+    $rawResponse = $e->getRawResponse();
+} catch (BaleBotNotFoundException $e) {
+    // Referenced unconfigured bot name
+    echo "Bot not found: " . $e->getMessage();
+} catch (BaleSDKException $e) {
+    // General SDK exception
+    echo "SDK Error: " . $e->getMessage();
+}
+```
+
+---
+
+### 13. Advanced Configuration & Custom Clients
+
+#### Asynchronous Non-Blocking Requests
+Enable async requests globally in `.env` (`BALE_ASYNC_REQUESTS=true`) or per instance:
+
+```php
+$bale = new \EFive\Bale\Api('YOUR_TOKEN', async: true);
+```
+
+#### Custom Base URL / API Proxy
+For local mock servers or custom Bale reverse proxies:
+
+```php
+$bale = new \EFive\Bale\Api('YOUR_TOKEN', baseBotUrl: 'https://proxy.example.com/bot');
+```
+
+#### Custom HTTP Client Handler
+Implement `EFive\Bale\HttpClients\HttpClientInterface` to plug in your own HTTP transport client (e.g. customized cURL, Guzzle middleware stack, or HTTP/2 client).
 
 ---
 
 ## 📚 API Method Reference
 
-All methods return strongly-typed `BaseObject` models or booleans:
+All SDK methods return strongly-typed `BaseObject` models, arrays, or boolean statuses:
 
-| Category | Available Methods |
-|---|---|
-| **Bot & Updates** | `getMe`, `getUpdates`, `setWebhook`, `deleteWebhook`, `removeWebhook`, `getWebhookInfo`, `getWebhookUpdate` |
-| **Messaging** | `sendMessage`, `forwardMessage`, `copyMessage`, `editMessageText`, `editMessageCaption`, `editMessageReplyMarkup`, `deleteMessage`, `sendChatAction` |
-| **Media Uploads** | `sendPhoto`, `sendAudio`, `sendDocument`, `sendVideo`, `sendAnimation`, `sendVoice`, `sendMediaGroup`, `getFile`, `downloadFile` |
-| **Chat Management** | `getChat`, `getChatAdministrators`, `getChatMembersCount`, `getChatMember`, `banChatMember`, `unbanChatMember`, `promoteChatMember`, `leaveChat`, `setChatTitle`, `setChatDescription`, `setChatPhoto`, `deleteChatPhoto`, `pinChatMessage`, `unpinChatMessage`, `unpinAllChatMessages`, `createChatInviteLink`, `revokeChatInviteLink`, `exportChatInviteLink` |
-| **Interactions** | `answerCallbackQuery`, `askReview`, `sendContact`, `sendLocation` |
-| **Payments** | `sendInvoice`, `createInvoiceLink`, `answerPreCheckoutQuery`, `inquireTransaction` |
-| **Commands** | `setMyCommands`, `deleteMyCommands`, `getMyCommands` |
-| **Stickers** | `sendSticker`, `uploadStickerFile`, `createNewStickerSet`, `addStickerToSet` |
+| Category | Method | Parameters | Return Type | Description |
+|---|---|---|---|---|
+| **Bot & Updates** | `getMe` | `[]` | `User` | Get bot profile information |
+| | `getUpdates` | `['offset'?, 'limit'?, 'timeout'?, ...]` | `Update[]` | Poll for updates |
+| | `setWebhook` | `['url', 'certificate'?, 'allowed_updates'?]` | `bool` | Set webhook URL |
+| | `deleteWebhook` / `removeWebhook` | `[]` | `bool` | Remove current webhook |
+| | `getWebhookInfo` | `[]` | `WebhookInfo` | Get current webhook status |
+| | `getWebhookUpdate` | `[$shouldEmitEvents, $request]` | `Update` | Parse incoming webhook update |
+| **Messaging** | `sendMessage` | `['chat_id', 'text', 'reply_markup'?, ...]` | `Message` | Send text message |
+| | `forwardMessage` | `['chat_id', 'from_chat_id', 'message_id']` | `Message` | Forward existing message |
+| | `copyMessage` | `['chat_id', 'from_chat_id', 'message_id', ...]` | `MessageId` | Copy message without forward tag |
+| | `editMessageText` | `['chat_id', 'message_id', 'text', ...]` | `Message\|bool` | Edit message text |
+| | `editMessageCaption` | `['chat_id', 'message_id', 'caption', ...]` | `Message\|bool` | Edit media caption |
+| | `editMessageReplyMarkup` | `['chat_id', 'message_id', 'reply_markup']` | `Message\|bool` | Edit inline keyboard markup |
+| | `deleteMessage` | `['chat_id', 'message_id']` | `bool` | Delete message |
+| | `sendChatAction` | `['chat_id', 'action']` | `bool` | Broadcast chat status (e.g. typing) |
+| | `askReview` | `['chat_id', ...]` | `Message` | Send review prompt |
+| **Media Uploads** | `sendPhoto` | `['chat_id', 'photo', 'caption'?, ...]` | `Message` | Send photo |
+| | `sendAudio` | `['chat_id', 'audio', 'caption'?, ...]` | `Message` | Send audio file |
+| | `sendDocument` | `['chat_id', 'document', 'caption'?, ...]` | `Message` | Send general file / document |
+| | `sendVideo` | `['chat_id', 'video', 'caption'?, ...]` | `Message` | Send video |
+| | `sendAnimation` | `['chat_id', 'animation', 'caption'?, ...]` | `Message` | Send animation / GIF |
+| | `sendVoice` | `['chat_id', 'voice', 'caption'?, ...]` | `Message` | Send voice audio message |
+| | `sendMediaGroup` | `['chat_id', 'media']` | `Message[]` | Send photo/video album |
+| | `sendLocation` | `['chat_id', 'latitude', 'longitude']` | `Message` | Send map location coordinates |
+| | `sendContact` | `['chat_id', 'phone_number', 'first_name', ...]` | `Message` | Send user vCard contact |
+| | `getFile` | `['file_id']` | `File` | Retrieve file info |
+| | `downloadFile` | `($file, $saveTo)` | `string` | Download file to disk |
+| **Chat Management** | `getChat` | `['chat_id']` | `ChatFullInfo` | Get chat details |
+| | `getChatAdministrators` | `['chat_id']` | `ChatMember[]` | List chat administrators |
+| | `getChatMembersCount` | `['chat_id']` | `int` | Get total chat member count |
+| | `getChatMember` | `['chat_id', 'user_id']` | `ChatMember` | Get specific member info |
+| | `banChatMember` | `['chat_id', 'user_id']` | `bool` | Ban user from chat |
+| | `unbanChatMember` | `['chat_id', 'user_id']` | `bool` | Unban user in chat |
+| | `promoteChatMember` | `['chat_id', 'user_id', ...]` | `bool` | Promote member to admin |
+| | `leaveChat` | `['chat_id']` | `bool` | Leave group or channel |
+| | `setChatTitle` | `['chat_id', 'title']` | `bool` | Change chat title |
+| | `setChatDescription` | `['chat_id', 'description']` | `bool` | Change chat description |
+| | `setChatPhoto` | `['chat_id', 'photo']` | `bool` | Set new chat profile photo |
+| | `deleteChatPhoto` | `['chat_id']` | `bool` | Delete chat profile photo |
+| | `pinChatMessage` | `['chat_id', 'message_id', ...]` | `bool` | Pin message in chat |
+| | `unpinChatMessage` | `['chat_id', 'message_id']` | `bool` | Unpin message in chat |
+| | `unpinAllChatMessages` | `['chat_id']` | `bool` | Unpin all messages |
+| | `createChatInviteLink` | `['chat_id', 'expire_date'?, ...]` | `string` | Create custom invite link |
+| | `revokeChatInviteLink` | `['chat_id', 'invite_link']` | `string` | Revoke invite link |
+| | `exportChatInviteLink` | `['chat_id']` | `string` | Export primary invite link |
+| **Interactions** | `answerCallbackQuery` | `['callback_query_id', 'text'?, ...]` | `bool` | Respond to inline button click |
+| **In-App Payments** | `sendInvoice` | `['chat_id', 'title', 'prices', ...]` | `Message` | Send payment invoice |
+| | `createInvoiceLink` | `['title', 'prices', 'provider_token', ...]` | `string` | Generate invoice payment link |
+| | `answerPreCheckoutQuery` | `['pre_checkout_query_id', 'ok', ...]` | `bool` | Approve/reject checkout |
+| | `inquireTransaction` | `['payment_charge_id']` | `Transaction` | Check payment transaction state |
+| **Bot Commands** | `setMyCommands` | `['commands']` | `bool` | Set bot commands list |
+| | `getMyCommands` | `[]` | `BotCommand[]` | Retrieve registered bot commands |
+| | `deleteMyCommands` | `[]` | `bool` | Delete registered bot commands |
+| **Stickers** | `sendSticker` | `['chat_id', 'sticker']` | `Message` | Send sticker |
+| | `uploadStickerFile` | `['user_id', 'sticker', 'sticker_format']`| `File` | Upload sticker file |
+| | `createNewStickerSet` | `['user_id', 'name', 'title', 'stickers', ...]` | `bool` | Create custom sticker set |
+| | `addStickerToSet` | `['user_id', 'name', 'sticker']` | `bool` | Add sticker to existing set |
 
 ---
 
 ## 🧪 Testing
 
-Run the test suite using PHPUnit:
+Run the automated test suite using PHPUnit:
 
 ```bash
 composer test
-# or
+# or directly via PHPUnit
 ./vendor/bin/phpunit
 ```
 
@@ -349,28 +921,29 @@ composer test
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request or open an Issue.
+Contributions are welcome and greatly appreciated!
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Ensure all tests pass (`composer test`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
+5. Push to your branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
 
 ---
 
 ## 💖 Funding & Support
 
-If this SDK helps you build your bots, please consider supporting the project:
+If this SDK helps you build awesome Bale bots, please consider supporting its ongoing maintenance and development:
 
-- **Email**: [info@efive.net](mailto:info@efive.net)
-- **Website**: [efive.net](https://efive.net)
-- **Donate**: [Aqayepardakht](https://aqayepardakht.ir/efive)
+- 👤 **Author**: [Erfan Vahabpour](https://erfanvahabpour.ir/)
+- 📧 **Email**: [info@efive.net](mailto:info@efive.net)
+- 🌐 **Website**: [efive.net](https://efive.net)
+- ☕ **Donate**: [Aqayepardakht (آقای پرداخت)](https://aqayepardakht.ir/efive)
 
 ---
 
 ## 📄 License & Disclaimer
 
 - **License**: Released under the [BSD 4-Clause License](LICENSE.md).
-- **Disclaimer**: This project is an unofficial community library and is not officially affiliated with or endorsed by Bale.
+- **Disclaimer**: This project is an unofficial community library and is not officially affiliated with, maintained, or endorsed by Bale.
