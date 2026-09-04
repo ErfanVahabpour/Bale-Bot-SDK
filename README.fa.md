@@ -15,6 +15,11 @@
 
 🌐 **Language / زبان:** [**English**](README.md) | **فارسی (Persian)**
 
+<p align="center">
+  <b>پکیج کامل پی‌اچ‌پی و لاراول برای توسعه ربات در بله | ارسال پیام، دکمه شیشه‌ای، پرداخت آنلاین و وبهوک</b><br />
+  <i>The premier PHP 8.2+ & Laravel Package for the Bale Messenger Bot API</i>
+</p>
+
 </div>
 
 ---
@@ -69,6 +74,7 @@
   - [۱۲. مدیریت خطاها و Exceptionها](#۱۲-مدیریت-خطاها-و-exceptionها)
   - [۱۳. تنظیمات پیشرفته و کلاینت سفارشی](#۱۳-تنظیمات-پیشرفته-و-کلاینت-سفارشی)
 - [جدول مرجع متدهای API](#-جدول-مرجع-متدهای-api)
+- [سوالات متداول (FAQ)](#-سوالات-متداول-faq)
 - [اجرای تست‌ها](#-اجرای-تستها)
 - [مشارکت در توسعه](#-مشارکت-در-توسعه)
 - [حمایت مالی و پشتیبانی](#-حمایت-مالی-و-پشتیبانی)
@@ -905,6 +911,134 @@ $bale = new \EFive\Bale\Api('YOUR_TOKEN', baseBotUrl: 'https://proxy.example.com
 | | `uploadStickerFile` | `['user_id', 'sticker', 'sticker_format']`| `File` | آپلود فایل اولیه استیکر |
 | | `createNewStickerSet` | `['user_id', 'name', 'title', 'stickers', ...]` | `bool` | ساخت بسته استیکر جدید |
 | | `addStickerToSet` | `['user_id', 'name', 'sticker']` | `bool` | افزودن استیکر به بسته موجود |
+
+---
+
+## ❓ سوالات متداول (FAQ)
+
+<details>
+<summary><b>۱. توکن ربات بله را از کجا و چگونه دریافت کنم؟</b></summary>
+<br>
+
+برای ساخت بات و دریافت توکن دسترسی وب‌سرویس:
+۱. وارد پیام‌رسان بله شوید و حساب کاربری رسمی **`@BotFather`** را جستجو کنید.  
+۲. دستور `/newbot` را ارسال کرده و نام و شناسه انگلیسی دلخواه برای ربات خود (که باید به `bot` ختم شود) انتخاب کنید.  
+۳. بات‌فادر یک رشته توکن مانند `123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ` به شما تحویل می‌دهد.  
+۴. این توکن را در فایل `.env` پروژه لاراول یا متغیرهای محیطی خود قرار دهید.
+</details>
+
+<details>
+<summary><b>۲. نحوه ساخت ربات بله در فریم‌ورک لاراول (Laravel 10, 11, 12, 13) چگونه است؟</b></summary>
+<br>
+
+پکیج را از طریق کامپوزر نصب و تنظیمات آن را منتشر کنید:
+```bash
+composer require erfanvahabpour/bale-bot-sdk
+php artisan bale:install
+```
+سپس توکن خود را در فایل `.env` با کلید `BALE_BOT_TOKEN` قرار دهید. اکنون در هر کجای کنترلرها، جاب‌ها یا مسیرهای لاراول می‌توانید مستقیماً از فساد `Bale` استفاده کنید:
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+Bale::sendMessage([
+    'chat_id' => $chatId,
+    'text'    => 'سلام! ربات بله شما در لاراول با موفقیت فعال شد 🚀',
+]);
+```
+</details>
+
+<details>
+<summary><b>۳. برای دریافت پیام‌ها، وبهوک (Webhook) بهتر است یا پولینگ (Long-Polling)؟</b></summary>
+<br>
+
+- **وب‌هوک (Webhook - پیشنهاد شده برای سرور اصلی و پروداکشن)**: در این حالت سرور بله به محض ارسال پیام توسط کاربر، آن را به آدرس امن HTTPS سایت شما POST می‌کند. بدون اتلاف منابع و در سریع‌ترین زمان ممکن پاسخ داده می‌شود:
+  ```bash
+  php artisan bale:webhook --set --url=https://your-domain.com/bale/webhook
+  ```
+- **پولینگ (Long-Polling - مناسب محیط توسعه لوکال)**: بدون نیاز به دامنه عمومی، آی‌پی استاتیک یا گواهی SSL، اسکریپت شما مستقیماً از سرور بله پیام‌های جدید را استعلام می‌کند:
+  ```bash
+  php artisan bale:polling
+  ```
+</details>
+
+<details>
+<summary><b>۴. چگونه دکمه‌های شیشه‌ای (Inline Keyboard) بسازیم و کلیک کاربر را دریافت کنیم؟</b></summary>
+<br>
+
+دکمه‌های شیشه‌ای زیر متن پیام پیوست می‌شوند و می‌توانند حاوی لینک وب‌سایت، کلید پاسخ (callback_data) یا مینی‌اپ باشند:
+```php
+$inlineKeyboard = [
+    'inline_keyboard' => [
+        [
+            ['text' => '🌐 مشاهده وب‌سایت', 'url' => 'https://github.com/ErfanVahabpour/Bale-Bot-SDK'],
+            ['text' => '⚡ تأیید عملیات', 'callback_data' => 'confirm_order'],
+        ],
+        [
+            ['text' => '📱 مینی‌اپ اختصاصی', 'web_app' => ['url' => 'https://app.example.com']],
+        ]
+    ]
+];
+
+Bale::sendMessage([
+    'chat_id'      => $chatId,
+    'text'         => 'لطفاً گزینه مورد نظر خود را انتخاب کنید:',
+    'reply_markup' => json_encode($inlineKeyboard),
+]);
+```
+کلیک کاربر را در وبهوک از طریق `$update->getCallbackQuery()` دریافت کنید و با متد `Bale::answerCallbackQuery` پاسخ دهید.
+</details>
+
+<details>
+<summary><b>۵. سیستم پرداخت درون‌برنامه‌ای (In-App Payment) بله چگونه پیاده‌سازی می‌شود؟</b></summary>
+<br>
+
+پیام‌رسان بله امکان ارسال مستقیم فاکتور خرید را فراهم کرده است. با فراخوانی متد `sendInvoice` فاکتور رسمی بله را برای کاربر بفرستید:
+```php
+Bale::sendInvoice([
+    'chat_id'        => $chatId,
+    'title'          => 'اشتراک ویژه یک‌ماهه',
+    'description'    => 'دسترسی نامحدود به بخش ویژه ربات',
+    'payload'        => 'invoice_order_9871',
+    'provider_token' => env('BALE_PAYMENT_PROVIDER_TOKEN'),
+    'currency'       => 'IRR',
+    'prices'         => [
+        ['label' => 'هزینه اشتراک', 'amount' => 500000] // مبلغ به ریال
+    ],
+]);
+```
+پس از انتخاب پرداخت توسط کاربر، آپدیت `pre_checkout_query` ارسال می‌شود که باید آن را تایید کنید و در صورت موفقیت، وضعیت تراکنش را با `Bale::inquireTransaction` بررسی نمایید.
+</details>
+
+<details>
+<summary><b>۶. آیا می‌توان چندین ربات بله را در یک پروژه لاراول مدیریت کرد؟</b></summary>
+<br>
+
+بله! قابلیت Multi-Bot در این پکیج به صورت پیش‌فرض تعبیه شده است. در فایل `config/bale.php` ربات‌های خود را تعریف کنید:
+```php
+'bots' => [
+    'default'     => ['token' => env('BALE_BOT_TOKEN')],
+    'support_bot' => ['token' => env('BALE_SUPPORT_BOT_TOKEN')],
+    'sales_bot'   => ['token' => env('BALE_SALES_BOT_TOKEN')],
+],
+```
+سپس در کد خود بدون تداخل با ربات مورد نظر ارتباط برقرار کنید:
+```php
+// ارسال از طریق ربات پشتیبانی
+Bale::bot('support_bot')->sendMessage(['chat_id' => $chatId, 'text' => 'پیام تیم پشتیبانی']);
+
+// ارسال از طریق ربات پیش‌فرض
+Bale::sendMessage(['chat_id' => $chatId, 'text' => 'پیام ربات اصلی']);
+```
+</details>
+
+<details>
+<summary><b>۷. چگونه در محیط لوکال (Localhost) وبهوک بله را تست کنیم؟</b></summary>
+<br>
+
+از آنجا که وب‌هوک بله نیازمند یک آدرس اینترنتی با پروتکل امن HTTPS است، در سیستم محلی خود می‌توانید از دو روش استفاده کنید:
+۱. استفاده از ابزارهای تانل معتبر مانند **Ngrok** یا **Cloudflare Tunnels** برای تبدیل آدرس لوکال‌هاست به یک آدرس عمومی HTTPS.
+۲. استفاده مستقیم از حالت پولینگ با دستور `php artisan bale:polling` که هیچ نیازی به آی‌پی عمومی یا گواهی SSL ندارد و بلافاصله کار می‌کند.
+</details>
 
 ---
 

@@ -15,13 +15,22 @@
 
 🌐 **Language / زبان:** **English** | [**فارسی (Persian)**](README.fa.md)
 
+<p align="center">
+  <b>کتابخانه جامع و مدرن ساخت ربات پیام‌رسان بله برای PHP و لاراول (Laravel 10, 11, 12, 13)</b><br />
+  <i>Modern, strongly-typed PHP 8.2+ SDK for Bale Messenger Bot API with full support for Webhooks, Inline Keyboards, Media uploads, and In-App Payments.</i>
+</p>
+
 </div>
 
 ---
 
-## 🌟 Overview
+## 🌟 Overview / معرفی
 
 **Bale Bot PHP SDK** is an enterprise-grade, developer-friendly PHP library designed to seamlessly interact with the [Bale Messenger Bot API](https://docs.bale.ai/). Whether you are building an e-commerce assistant, customer support bot, payment automation service, or interactive mini-app in Standalone PHP or Laravel, this SDK offers an expressive, robust, and strongly-typed toolkit.
+
+> [!NOTE]
+> **راهنمای فارسی / Persian Documentation:**  
+> اگر به دنبال ساخت ربات پیام‌رسان بله در زبان **PHP** یا فریم‌ورک **لاراول (Laravel 10, 11, 12, 13)** هستید، این کتابخانه کامل‌ترین SDK پی‌اچ‌پی برای وب‌سرویس بله است. تمامی قابلیت‌ها از جمله ارسال انواع پیام، دکمه‌های شیشه‌ای (Inline Keyboard)، وب‌هوک (Webhook)، درگاه پرداخت درون‌برنامه‌ای، آپلود رسانه و مدیریت چندین بات به طور کامل پیاده‌سازی شده‌اند. برای مطالعه راهنمای کامل به زبان فارسی به [**README.fa.md**](README.fa.md) مراجعه فرمایید.
 
 ---
 
@@ -67,6 +76,7 @@
   - [12. Error & Exception Handling](#12-error--exception-handling)
   - [13. Advanced Configuration & Custom Clients](#13-advanced-configuration--custom-clients)
 - [API Method Reference](#-api-method-reference)
+- [Frequently Asked Questions (FAQ)](#-frequently-asked-questions-faq--سوالات-متداول)
 - [Testing](#-testing)
 - [Contributing](#-contributing)
 - [Funding & Support](#-funding--support)
@@ -904,6 +914,136 @@ All SDK methods return strongly-typed `BaseObject` models, arrays, or boolean st
 | | `uploadStickerFile` | `['user_id', 'sticker', 'sticker_format']`| `File` | Upload sticker file |
 | | `createNewStickerSet` | `['user_id', 'name', 'title', 'stickers', ...]` | `bool` | Create custom sticker set |
 | | `addStickerToSet` | `['user_id', 'name', 'sticker']` | `bool` | Add sticker to existing set |
+
+---
+
+## ❓ Frequently Asked Questions (FAQ) / سوالات متداول
+
+<details>
+<summary><b>1. How do I get a Bale Bot API Token? / چگونه توکن ربات بله دریافت کنم؟</b></summary>
+<br>
+
+To create a bot and get an API token:
+1. Open the [Bale Messenger](https://bale.ai/) app.
+2. Search for the official **`@BotFather`** account and start a conversation.
+3. Send the command `/newbot` and follow the on-screen instructions to select a display name and a unique username ending with `bot`.
+4. BotFather will provide an authorization token formatted like `123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ`.
+5. Set this token in your `.env` file as `BALE_BOT_TOKEN=your_token_here`.
+</details>
+
+<details>
+<summary><b>2. How to build a Bale bot in Laravel? / چگونه در لاراول ربات بله بسازیم؟</b></summary>
+<br>
+
+Install the package via Composer and publish the configuration:
+```bash
+composer require erfanvahabpour/bale-bot-sdk
+php artisan bale:install
+```
+Add your bot token to `.env`:
+```env
+BALE_BOT_TOKEN=123456789:ABCdef...
+```
+You can now use the `Bale` Facade anywhere in your Laravel application (Controllers, Jobs, Commands, or Routes):
+```php
+use EFive\Bale\Laravel\Facades\Bale;
+
+Bale::sendMessage([
+    'chat_id' => $chatId,
+    'text'    => 'سلام! ربات بله لاراول شما با موفقیت راه‌اندازی شد 🚀',
+]);
+```
+</details>
+
+<details>
+<summary><b>3. Webhook vs Long-Polling: Which update mechanism should I use? / تفاوت وب‌هوک (Webhook) و پولینگ (Polling) چیست؟</b></summary>
+<br>
+
+- **Webhook (Recommended for Production)**: Bale servers push updates to your secure HTTPS webhook URL via POST requests in real time. It is high-performance, asynchronous, and scalable:
+  ```bash
+  php artisan bale:webhook --set --url=https://your-domain.com/bale/webhook
+  ```
+- **Long-Polling (Ideal for Local Development & Testing)**: Your application polls Bale servers periodically for new messages. No public domain, static IP, or SSL certificate is required. Run:
+  ```bash
+  php artisan bale:polling
+  ```
+</details>
+
+<details>
+<summary><b>4. How to create Inline Keyboards (Glass Buttons) with callback queries? / نحوه ساخت دکمه شیشه‌ای (Inline Keyboard) در ربات بله چیست؟</b></summary>
+<br>
+
+Inline keyboards are attached directly under messages. You can pass URLs, callback data, or mini-app WebApp triggers:
+```php
+$inlineKeyboard = [
+    'inline_keyboard' => [
+        [
+            ['text' => '🌐 مشاهده وب‌سایت', 'url' => 'https://github.com/ErfanVahabpour/Bale-Bot-SDK'],
+            ['text' => '⚡ تأیید درخواست', 'callback_data' => 'confirm_action'],
+        ],
+        [
+            ['text' => '📱 باز کردن مینی‌اپ', 'web_app' => ['url' => 'https://app.example.com']],
+        ]
+    ]
+];
+
+Bale::sendMessage([
+    'chat_id'      => $chatId,
+    'text'         => 'لطفاً یکی از گزینه‌های زیر را انتخاب کنید:',
+    'reply_markup' => json_encode($inlineKeyboard),
+]);
+```
+Handle button clicks in your webhook or controller by inspecting `$update->getCallbackQuery()`, and acknowledge them using `Bale::answerCallbackQuery(['callback_query_id' => $id])`.
+</details>
+
+<details>
+<summary><b>5. How does Bale In-App Payment work? / پرداخت و فاکتور درون‌برنامه‌ای بله چگونه کار می‌کند؟</b></summary>
+<br>
+
+Bale provides a native in-app payment system. You can send a structured invoice card or create a direct invoice link:
+```php
+Bale::sendInvoice([
+    'chat_id'        => $chatId,
+    'title'          => 'اشتراک ویژه یک‌ماهه',
+    'description'    => 'دسترسی نامحدود به تمامی خدمات ربات',
+    'payload'        => 'order_invoice_id_1002',
+    'provider_token' => env('BALE_PAYMENT_PROVIDER_TOKEN'),
+    'currency'       => 'IRR',
+    'prices'         => [
+        ['label' => 'اشتراک ویژه', 'amount' => 500000] // 500,000 Rials
+    ],
+]);
+```
+When the user clicks pay, respond to the `pre_checkout_query` update, and verify completion using `Bale::inquireTransaction(['payment_charge_id' => $chargeId])`.
+</details>
+
+<details>
+<summary><b>6. Can I manage multiple Bale bots in a single Laravel codebase? / آیا امکان مدیریت چندین بات بله به طور هم‌زمان وجود دارد؟</b></summary>
+<br>
+
+Yes, Multi-Bot management is supported out of the box! Register extra bot tokens in `config/bale.php`:
+```php
+'bots' => [
+    'default'     => ['token' => env('BALE_BOT_TOKEN')],
+    'support_bot' => ['token' => env('BALE_SUPPORT_BOT_TOKEN')],
+    'sales_bot'   => ['token' => env('BALE_SALES_BOT_TOKEN')],
+],
+```
+Switch between bots seamlessly in your code:
+```php
+// Dispatch message via support bot
+Bale::bot('support_bot')->sendMessage([
+    'chat_id' => $userId,
+    'text'    => 'سلام، کارشناس پشتیبانی در خدمت شماست.',
+]);
+
+// Dispatch message via main default bot
+Bale::sendMessage([
+    'chat_id' => $userId,
+    'text'    => 'پیام از ربات اصلی.',
+]);
+```
+</details>
 
 ---
 
