@@ -1087,3 +1087,17 @@ If this SDK helps you build awesome Bale bots, please consider supporting its on
 
 - **License**: Released under the [BSD 4-Clause License](LICENSE.md).
 - **Disclaimer**: This project is an unofficial community library and is not officially affiliated with, maintained, or endorsed by Bale.
+
+## Keywords
+
+- کتابخانه بله
+- کتابخانه بله PHP
+- کتابخانه بله لاراول
+- کتابخانه PHP بله
+- کتابخانه Laravel بله
+- ربات بله PHP
+- ربات بله Laravel
+- Bale Bot PHP
+- Bale Bot Laravel
+- Bale PHP SDK
+- Bale Laravel SDK
